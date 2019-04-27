@@ -1,4 +1,5 @@
 const server = 'http://www.indo123.co/';
+// const server = 'http://localhost/';
 
 
 const express = require('express');
