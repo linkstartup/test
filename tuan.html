@@ -54,6 +54,15 @@
     </div>
 <div id="timer"></div>
 
+
+<input type="email" id="email" />
+<div id="result"></div>
+<div id="validate">validate</div>
+
+
+
+<label for="phone">phone +62</label><input id="mobilephone" type="tel" name="phone"  placeholder="81386139021" />
+<div id="validPhone">valid phone</div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -64,45 +73,67 @@
 
         $(document).ready(()=>{
 
-// var timer = function(){
-//     var endDate = new Date("2019-04-27 20:41:00");
-//     var diffSecond = parseInt((endDate-new Date())/1000); //结束时间到现在差的秒数
-    
-//     if(diffSecond>0){
-//         var offset = moment.duration(diffSecond, 'seconds');
-//         var month = offset.months();
-//         var day = offset.days();
-//         var hour = offset.hours();
-//         var minute = offset.minutes();
-//         var second = offset.seconds();
 
-//         var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
-//         $("#timer").text(diff.format("HH:mm:ss"));
-//     }else{
-//         $("#timer").text('time out');
+            var id = setInterval(function(){
+                var endDate = new Date("2019-04-27 20:48:00");
+                var diffSecond = parseInt((endDate-new Date())/1000); //结束时间到现在差的秒数
+                console.log(diffSecond)
+                if(diffSecond>0){
+                    var offset = moment.duration(diffSecond, 'seconds');
+                    var month = offset.months();
+                    var day = offset.days();
+                    var hour = offset.hours();
+                    var minute = offset.minutes();
+                    var second = offset.seconds();
 
-//     }
-    
-// }
-var id = setInterval(function(){
-    var endDate = new Date("2019-04-27 20:48:00");
-    var diffSecond = parseInt((endDate-new Date())/1000); //结束时间到现在差的秒数
-    console.log(diffSecond)
-    if(diffSecond>0){
-        var offset = moment.duration(diffSecond, 'seconds');
-        var month = offset.months();
-        var day = offset.days();
-        var hour = offset.hours();
-        var minute = offset.minutes();
-        var second = offset.seconds();
+                    var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
+                    $("#timer").text(diff.format("HH:mm:ss"));
+                }else{
+                    clearInterval(id)
+                    $("#timer").text('time out');
 
-        var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
-        $("#timer").text(diff.format("HH:mm:ss"));
-    }else{
-        clearInterval(id)
-        $("#timer").text('time out');
+                }},1000);
 
-    }},1000);
+
+
+
+            function validateEmail(email) {
+              var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+              return re.test(email);
+            }
+
+            function validate() {
+              var $result = $("#result");
+              var email = $("#email").val();
+              $result.text("");
+
+              if (validateEmail(email)) {
+                $result.text(email + " is valid :)");
+                $result.css("color", "green");
+              } else {
+                $result.text(email + " is not valid :(");
+                $result.css("color", "red");
+              }
+              return false;
+            }
+
+            $("#validate").on("click", validate);
+
+
+
+
+            
+            function validatePhone(phone) {
+              var re = /^[0-9]{11}$/;
+              return re.test(phone);
+              // return phone.match(/\d/g).length===10;
+            }
+            
+            $("#validPhone").on("click", ()=>{
+                console.log(validatePhone($('#mobilephone').val()))
+            });
+
+
 
 
             const display = $("#display");

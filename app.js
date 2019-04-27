@@ -1,5 +1,5 @@
-const server = 'http://www.indo123.co/';
-// const server = 'http://localhost/';
+// const server = 'http://www.indo123.co/';
+const server = 'http://localhost/';
 
 
 const express = require('express');
@@ -241,6 +241,30 @@ app.post('/joinTuan', (req, res) => {
 
 
 
+//查询团员所在的团
+
+
+app.get('/myt', (req, res) => {
+    res.sendFile(path.join(__dirname, 'myt.html'));
+});
+app.post('/myt', (req, res) => {
+    db.getDB().collection(collection5).find({
+        memberPhone: req.body.memberPhone
+    }).toArray((err, documents) => {
+        if (documents[0] && documents[0].tuanId) {
+            res.json({
+                msg: server + "tuan?t=" + documents[0].tuanId,
+                error: null
+            });
+        }
+
+
+    });
+
+});
+
+
+
 //查询当前的团
 
 app.get('/tuan', (req, res) => {
@@ -365,7 +389,10 @@ app.post('/tzq', (req, res) => {
         t: req.body.memberPhone
     }).toArray((err, documents) => {
 
-        res.json(documents);
+        res.json({
+            documents: documents,
+            server: server
+        });
 
 
     });

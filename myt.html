@@ -39,9 +39,9 @@
                 <form id="form">
                     <div class="form-group">
                         <label for="phone">phone</label>
-                        <input type="text" class="form-control" id="phoneUserInput" placeholder="phone of tz">
+                        <input type="text" class="form-control" id="phoneUserInput" placeholder="phone of member">
                        
-                        <button id="tzq" type="submit" class="btn btn-primary">tzq</button>
+                        <button id="join" type="submit" class="btn btn-primary">join</button>
                     </div>
                     
                 </form>
@@ -52,76 +52,57 @@
 
            
     </div>
+<div id="timer"></div>
 
+
+
+
+
+<label for="phone">phone +62</label><input id="mobilephone" type="tel" name="phone"  placeholder="81386139021" />
+<div id="validPhone">valid phone</div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script>
+
         $(document).ready(()=>{
 
-            const display = $("#display");
-            const message = $("#message");
-            const form = $("#form");
-            const phoneUserInput=$("#phoneUserInput");
 
+            
 
-            message.hide();
-
-
-
-
-
-            form.submit((e)=>{
-                e.preventDefault();
-                fetch('/tzq',{
-                    method : 'post',
-                    body : JSON.stringify({memberPhone:phoneUserInput.val()}),
-                    headers : {
-                        "Content-Type" : "application/json; charset=utf-8"
-                    }
-                }).then((response)=>{
-                    return response.json();
-                }).then((data)=>{
-                    display.empty()
-                    displayTodos(data.documents,data.server)
-                    
-                });
+            
+            function validatePhone(phone) {
+              // var re = /^[0-9]{11}$/;
+              // return re.test(phone);
+              // return phone.match(/\d/g).length===10;
+              return true
+            }
+            
+            $("#validPhone").on("click", ()=>{
+                if(validatePhone($('#mobilephone').val())){
+                    fetch('/myt',{
+                        method : 'post',
+                        body : JSON.stringify({memberPhone:$('#mobilephone').val()}),
+                        headers : {
+                            "Content-Type" : "application/json; charset=utf-8"
+                        }
+                    }).then((response)=>{
+                        return response.json();
+                    }).then((data)=>{
+                        if(data.msg){
+                            window.location.href=data.msg;                        
+                        }
+                    });                    
+                }
             });
 
 
 
 
-
-
-
-
-            const buildTemplate = (todo,server)=>{
-                let href=server+"tuan?t="+todo._id;
-
-                if(true){//todo.m.length<10
-                    return `<li class="list-group-item" id="">
-                                <div class="row">
-                                    <div class="col-md-6" id="">${todo._id}</div>
-                                    <div class="col-md-6" id="">${todo.m.length}</div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-3" id="">winner ${todo.haveWinner}</div>
-                                    <a class="col-md-3" href=${href} target="_blank">go to</a>
-                                </div>                                
-                           </li>`;                    
-                }
-
-            }
-
-            const displayTodos = (data,server)=>{
-                data.forEach((todo)=>{
-                    display.append(buildTemplate(todo,server));
-                });
-            }
-
+            
 
 
         });
