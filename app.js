@@ -1,3 +1,6 @@
+const server = 'http://18.222.89.229/';
+
+
 const express = require('express');
 const bodyParser = require("body-parser");
 const path = require('path');
@@ -167,7 +170,7 @@ app.post('/joinTuan', (req, res) => {
 
                                         res.json({
                                             full: true,
-                                            msg: "http://localhost:3000/tuan?t=" + existedTuanId,
+                                            msg: server + "tuan?t=" + existedTuanId,
                                             error: null
                                         });
 
@@ -202,7 +205,7 @@ app.post('/joinTuan', (req, res) => {
 
                                             res.json({
                                                 full: true,
-                                                msg: "http://localhost:3000/tuan?t=" + newTuanId,
+                                                msg: server + "tuan?t=" + newTuanId,
                                                 error: null
                                             });
 
@@ -280,7 +283,7 @@ app.post('/tuanzhangjoin', (req, res) => {
                     console.log(result.insertedId)
 
                     res.json({
-                        msg: "http://localhost:3000/tuan?t=" + result.insertedId,
+                        msg: server + "tuan?t=" + result.insertedId,
                         error: null
                     });
 
@@ -319,7 +322,7 @@ app.post('/tuanzhangcreate', (req, res) => {
                     console.log(result.insertedId)
 
                     res.json({
-                        msg: "http://localhost:3000/tuan?t=" + result.insertedId,
+                        msg: server + "tuan?t=" + result.insertedId,
                         error: null
                     });
 
@@ -335,7 +338,7 @@ app.post('/tuanzhangcreate', (req, res) => {
                 console.log(result.insertedId)
 
                 res.json({
-                    msg: "http://localhost:3000/tuan?t=" + result.insertedId,
+                    msg: server + "tuan?t=" + result.insertedId,
                     error: null
                 });
 
