@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
-                <form id="form">
+<!--                 <form id="form">
                     <div class="form-group">
                         <label for="phone">phone</label>
                         <input type="text" class="form-control" id="phoneUserInput" placeholder="phone of tuanzhang">
@@ -24,7 +24,7 @@
                         <button type="submit" class="btn btn-primary">Create</button>
                     </div>
                     
-                </form>
+                </form> -->
 
                 <div class="form-group">
                     <label for="phone">new Tuan</label>
@@ -71,8 +71,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script>
         $(document).ready(()=>{
-            const display = $("#display");
-            const form = $("#form");
+            // const display = $("#display");
+            // const form = $("#form");
             const phoneUserInput=$("#phoneUserInput");
             const message = $("#message");
             message.hide();
@@ -90,23 +90,23 @@
 
 
 
-            form.submit((e)=>{
-                e.preventDefault();
-                fetch('/tuanzhangjoin',{
-                    method : 'post',
-                    body : JSON.stringify({tuanzhangPhone:phoneUserInput.val()}),
-                    headers : {
-                        "Content-Type" : "application/json; charset=utf-8"
-                    }
-                }).then((response)=>{
-                    return response.json();
-                }).then((data)=>{
-                        displayMessage(true,data.msg);                        
+            // form.submit((e)=>{
+            //     e.preventDefault();
+            //     fetch('/tuanzhangjoin',{
+            //         method : 'post',
+            //         body : JSON.stringify({tuanzhangPhone:phoneUserInput.val()}),
+            //         headers : {
+            //             "Content-Type" : "application/json; charset=utf-8"
+            //         }
+            //     }).then((response)=>{
+            //         return response.json();
+            //     }).then((data)=>{
+            //             displayMessage(true,data.msg);                        
 
-                    // resetTodosInput();
+            //         // resetTodosInput();
                     
-                });
-            });
+            //     });
+            // });
 
             $("#createTuan").click(()=>{
                 fetch('/tuanzhangcreate',{

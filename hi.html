@@ -15,23 +15,9 @@
         <div class="row">
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
-                <form id="form">
-                    <div class="form-group">
-                        <label for="phone">phone</label>
-                        <input type="text" class="form-control" id="phoneUserInput" placeholder="phone">
-                       
-                        <button type="submit" class="btn btn-primary">Create</button>
-                    </div>
-                    
-                </form>
-            </div>
-            <div class="col-lg-2"></div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2"></div>
-            <div class="col-lg-8">
+                <button class="btn btn-primary" id="timer">winner</button>                
+
                 <ul class="list-group" id="display">
-                
                 </ul>
             </div>
             <div class="col-lg-2"></div>
@@ -46,37 +32,72 @@
             </div>
             <div class="col-lg-2"></div>
         </div>
+
+
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <form id="form">
+                    <div class="form-group" id="userInfo">
+                        <label for="phone">phone +62</label>
+                        <input class="form-control" id="phoneUserInput" type="tel" name="phone"  placeholder="81386139021" />
+
+
+                        <label for="phone">name </label>
+                        <input class="form-control" id="nameUserInput" type="text" name="name"  placeholder="name" />
+
+
+                       
+                        <button id="join" type="submit" class="btn btn-primary">join</button>
+                    </div>
+                    
+                </form>
+
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
            
     </div>
+
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script>
+
         $(document).ready(()=>{
+
+
+
             const display = $("#display");
+            const message = $("#message");
             const form = $("#form");
             const phoneUserInput=$("#phoneUserInput");
-            const message = $("#message");
+            const join=$("#join");
+            const timer=$("#timer")
+
+
             message.hide();
 
             const displayMessage = (flag,msg)=>{
                 // successful
-                if(flag){
-                    message.removeClass('alert-danger');
-                    message.addClass('alert-success');
-                    message.html(msg);
-                    message.show();
-                }
-                else{
-                    message.removeClass('alert-success');
-                    message.addClass('alert-danger');
-                    message.html(msg);
-                    message.show();
-                }
+
+                message.removeClass('alert-danger');
+                message.addClass('alert-success');
+                message.html(msg);
+                message.show();
+                
+
             }
+
+
+
+
 
             function getQueryVariable(variable){
                    var query = window.location.search.substring(1);
@@ -88,150 +109,256 @@
                    return(false);
             }
 
-            var id=getQueryVariable("id");
+            var t=getQueryVariable("t");
 
 
-            form.submit((e)=>{
-                e.preventDefault();
-                fetch('/postParentId',{
+
+            fetch('/getT',{//抽奖
+                method : 'post',
+                body : JSON.stringify({t:t}),
+                headers : {
+                    "Content-Type" : "application/json; charset=utf-8"
+                }
+            }).then((response)=>{
+                return response.json();
+            }).then((data)=>{
+                console.log(data)
+                let diffSecond=data.diffSecond;
+
+                startCount(diffSecond);
+
+                var id = setInterval(function(){
+                    console.log(diffSecond)
+                    diffSecond--;
+                    if(diffSecond>=0){
+                        var offset = moment.duration(diffSecond, 'seconds');
+                        var month = offset.months();
+                        var day = offset.days();
+                        var hour = offset.hours();
+                        var minute = offset.minutes();
+                        var second = offset.seconds();
+
+                        var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
+                        $("#timer").html(diff.format("HH:mm:ss"));
+                    }else{
+                        clearInterval(id)
+                                
+                        fetch('/hit',{//查询当前团
+                            method : 'post',
+                            body : JSON.stringify({t:t}),
+                            headers : {
+                                "Content-Type" : "application/json; charset=utf-8"
+                            }
+                        }).then((response)=>{
+                            return response.json();
+                        }).then((data)=>{
+                            if(data.m.length<10){
+
+                                $("#timer").html('Game Over')
+                                $("#userInfo").hide()
+
+
+                            }else{//时间到，且人数满
+                                fetch('/hiBtn',{//抽奖
+                                    method : 'post',
+                                    body : JSON.stringify({t:t}),
+                                    headers : {
+                                        "Content-Type" : "application/json; charset=utf-8"
+                                    }
+                                }).then((response)=>{
+                                    return response.json();
+                                }).then((data)=>{
+                                    $("#timer").html(data.memberPhone)
+                                    console.log(data)
+                                    
+                                })
+                               
+                            }
+                            
+                        })
+            
+
+                    }
+                },1000);
+
+                
+            })
+
+
+
+            //倒计时开奖
+            
+            function startCount(diffSecond){
+                console.log(diffSecond)
+                if(diffSecond>=0){
+                    var offset = moment.duration(diffSecond, 'seconds');
+                    var month = offset.months();
+                    var day = offset.days();
+                    var hour = offset.hours();
+                    var minute = offset.minutes();
+                    var second = offset.seconds();
+
+                    var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
+                    $("#timer").html(diff.format("HH:mm:ss"));
+                }else{//时间到
+                    fetch('/hit',{//查询当前团人数
+                        method : 'post',
+                        body : JSON.stringify({t:t}),
+                        headers : {
+                            "Content-Type" : "application/json; charset=utf-8"
+                        }
+                    }).then((response)=>{
+                        return response.json();
+                    }).then((data)=>{
+                        if(data.m.length<10){//时间到，人未满
+                            $("#timer").html('Game Over')
+                            $("#userInfo").hide()
+
+
+
+                        }else{//时间到，且人数满
+                            fetch('/hiBtn',{//抽奖
+                                method : 'post',
+                                body : JSON.stringify({t:t}),
+                                headers : {
+                                    "Content-Type" : "application/json; charset=utf-8"
+                                }
+                            }).then((response)=>{
+                                return response.json();
+                            }).then((data)=>{
+                                $("#timer").html(data.memberPhone)
+                                console.log(data)
+                                
+                            })
+                           
+                        }
+                        
+                    })                    
+                }
+            }
+
+
+
+
+
+
+            function getTodos(){
+
+                fetch('/hit',{//查询当前团
                     method : 'post',
-                    body : JSON.stringify({id:id,phone:phoneUserInput.val()}),
+                    body : JSON.stringify({t:t}),
                     headers : {
                         "Content-Type" : "application/json; charset=utf-8"
                     }
                 }).then((response)=>{
                     return response.json();
                 }).then((data)=>{
-                        displayMessage(true,data.msg);                        
+                    if(data.m.length<10){
+                        display.append(`<div>captain ${data.t} </div>`)                    
+                        display.append(`<div>need ${10-data.m.length} more</div>`)
+                        displayTodos(data);
 
-                    // resetTodosInput();
+                    }else{
+                        if(data.haveWinner){
+                            timer.html(data.haveWinner.memberPhone)
+
+                        }
+                        display.append(`<div>captain ${data.t} </div>`)                    
+                        display.append(`<div>full</div>`)
+                        $("#userInfo").hide()
+                        displayTodos(data);
+                       
+                    }
                     
                 });
+
+            } 
+
+            getTodos()
+
+
+
+
+
+
+
+
+
+
+
+
+            
+            function validatePhone(phone) {
+              var re = /^[0-9]{11}$/;
+              return re.test(phone);
+              // return phone.match(/\d/g).length===10;
+            }
+            
+
+
+
+
+
+
+
+
+
+            form.submit((e)=>{
+                e.preventDefault();
+
+                if(validatePhone($('#phoneUserInput').val())){
+                    fetch('/hi',{//参加团
+                        method : 'post',
+                        body : JSON.stringify({t:t,memberPhone:phoneUserInput.val(),memberName:$('#nameUserInput').val()}),
+                        headers : {
+                            "Content-Type" : "application/json; charset=utf-8"
+                        }
+                    }).then((response)=>{
+                        return response.json();
+                    }).then((data)=>{
+                        if(data.full){
+                            window.location.href=data.msg;
+                        }else{
+                            displayMessage(true,data.msg);
+                            display.empty();                        
+                            
+                            getTodos();                        
+                        }
+
+
+                        
+                    });
+
+                }
+
+
             });
 
- 
-            const getTodos = ()=>{
-                // fetch('/postParentId',
-                //     {
-                //         method : "post",
-                //         body: JSON.stringify({id:id,childId:}),
-                //         headers : {"Content-Type" : "application/json; charset=utf-8"}
-                //     }
-
-                // )
-
-                // .then((response)=>{
-                //     return response.json();
-                // }).then((data)=>{
-                //     console.log(data);
-                //     // displayTodos(data);
-                // });
-            }
 
 
-          
-
-            //getTodos();
-
-            const resetTodosInput = ()=>{
-                phoneUserInput.val('');
-            }
-
-            const editTodo = (todo,todoID,editID)=>{
-                let editBtn = $(`#${editID}`);
-                editBtn.click(()=>{
-                    fetch(`/${todo._id}`,{
-                        method : "put",
-                        headers : {
-                            "Content-Type" : "application/json; charset=utf-8" 
-                        },
-                        body : JSON.stringify({todo : todoUserInput.val()})
-                    }).then((response)=>{
-                        return response.json();
-                    }).then((data)=>{
-                        if(data.ok == 1){
-                            let todoIndex = $(`#${todoID}`);
-                            todoIndex.html(data.value.todo);
-                            resetTodosInput();
-                        }
-                    });
-                });
-            }
-
-            const deleteTodo = (todo,listItemID,deleteID)=>{
-                let deleteBtn = $(`#${deleteID}`);
-                deleteBtn.click(()=>{
-                    fetch(`/${todo._id}`,{
-                        method: "delete"
-                    }).then((response)=>{
-                        return response.json();
-                    }).then((data)=>{
-                        if(data.ok == 1){
-                            $(`#${listItemID}`).remove();
-                        }
-                    });
-                });
-            }
 
 
-            const buildIDS = (todo)=>{
-                return {
-                    editID : "edit_" + todo._id,
-                    deleteID : "delete_" + todo._id,
-                    listItemID : "listItem_" + todo._id,
-                    todoID : "todo_" + todo._id
-                }
-            }
 
-            const buildTemplate = (todo,ids)=>{
-                return `<li class="list-group-item" id="${ids.listItemID}">
-                            <div class="row">
-                                <div class="col-md-4" id="${ids.todoID}">${todo.todo}</div>
-                                <div class="col-md-4"></div>
-                                <div class="col-md-4 text-right">
-                                    <button type="button" class="btn btn-secondary" id="${ids.editID}">Edit</button>
-                                    <button type="button" class="btn btn-danger" id="${ids.deleteID}">Delete</button>
-                                </div>
-                            </div>
-                       </li>`;
-            }
+
+
+
+
+
+
 
             const displayTodos = (data)=>{
-                data.forEach((todo)=>{
-                    let ids = buildIDS(todo);
-                    display.append(buildTemplate(todo,ids));
-                    editTodo(todo,ids.todoID,ids.editID);
-                    deleteTodo(todo,ids.listItemID,ids.deleteID);
+                data.m.forEach((todo)=>{
+                    display.append(
+                        `<li class="list-group-item" id="">
+                            <div class="row">
+                                <div class="col-md-4" id="">${todo.memberPhone}</div>
+                                <div class="col-md-4">${todo.memberName}</div>
+                            </div>
+                       </li>`);
                 });
             }
 
-            // form.submit((e)=>{
-            //     e.preventDefault();
-            //     fetch('/',{
-            //         method : 'post',
-            //         body : JSON.stringify({todo : todoUserInput.val(),phone:phoneUserInput.val(),previousUser:previousUser.val(),id:id,good:good}),
-            //         headers : {
-            //             "Content-Type" : "application/json; charset=utf-8"
-            //         }
-            //     }).then((response)=>{
-            //         return response.json();
-            //     }).then((data)=>{
-            //         if(!data.error){
-            //             if(data.result.ok == 1 && data.result.n == 1){
-            //                 let ids = buildIDS(data.document);
-            //                 display.append(buildTemplate(data.document,ids));
-            //                 editTodo(data.document,ids.todoID,ids.editID);
-            //                 deleteTodo(data.document,ids.listItemID,ids.deleteID);
-            //                 displayMessage(true,data.msg);
-            //             }
-            //         }
-            //         else
-            //             displayMessage(false,data.error.message);
 
-            //         resetTodosInput();
-                    
-            //     });
-            // });
 
         });
     </script>
