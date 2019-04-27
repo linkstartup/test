@@ -113,8 +113,7 @@
                     return response.json();
                 }).then((data)=>{
                     if(data.full){
-                        console.log(data.msg)
-                        // window.location.href=data.msg;
+                        window.location.href=data.msg;
                     }else{
                         displayMessage(true,data.msg);
                         display.empty();                        
