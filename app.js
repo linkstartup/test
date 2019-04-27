@@ -1,4 +1,4 @@
-const server = 'http://18.222.89.229/';
+const server = 'http://www.indo123.co/';
 
 
 const express = require('express');
