@@ -1,4 +1,4 @@
-const server = 'http://18.222.89.229/';
+const server = 'http://18.222.89.229:3000/';
 
 
 const express = require('express');
