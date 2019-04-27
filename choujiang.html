@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Todo Crud Application</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <form id="form">
+                    <div class="form-group">
+
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <ul class="list-group" id="display">
+                
+                </ul>
+            </div>
+            <div class="col-lg-2"></div>
+        </div> 
+        <button id="choujiang" class="btn btn-primary">choujiang</button>
+        <br>
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="alert" role="alert" id="message">
+                    
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+           
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(()=>{
+            const display = $("#display");
+            const message = $("#message");
+            const choujiang=$("#choujiang");
+
+            message.hide();
+
+            const displayMessage = (flag,msg)=>{
+                // successful
+                if(flag){
+                    message.removeClass('alert-danger');
+                    message.addClass('alert-success');
+                    message.html(msg);
+                    message.show();
+                }
+                else{
+                    message.removeClass('alert-success');
+                    message.addClass('alert-danger');
+                    message.html(msg);
+                    message.show();
+                }
+            }
+
+
+
+            function getQueryVariable(variable){
+                   var query = window.location.search.substring(1);
+                   var vars = query.split("&");
+                   for (var i=0;i<vars.length;i++) {
+                           var pair = vars[i].split("=");
+                           if(pair[0] == variable){return pair[1];}
+                   }
+                   return(false);
+            }
+
+            var id=getQueryVariable("id");
+
+
+
+            const getTodos = ()=>{
+
+
+                fetch('/choujiang',{
+                    method : 'post',
+                    body : JSON.stringify({tuanId:id}),
+                    headers : {
+                        "Content-Type" : "application/json; charset=utf-8"
+                    }
+                }).then((response)=>{
+                    return response.json();
+                }).then((data)=>{
+
+                    displayTodos(data);
+                    
+                });
+
+            }
+
+
+
+            choujiang.click(function(){
+                fetch('/choujiangBtn',{
+                    method : 'post',
+                    body : JSON.stringify({tuanId:id}),
+                    headers : {
+                        "Content-Type" : "application/json; charset=utf-8"
+                    }
+                }).then((response)=>{
+                    return response.json();
+                }).then((data)=>{
+                    console.log(data)
+                    choujiang.html(data)
+
+                    
+                });             
+            })
+
+            getTodos();
+
+            const resetTodosInput = ()=>{
+                todoUserInput.val('');
+                phoneUserInput.val('');
+                previousUser.val('');
+            }
+
+
+
+
+            const buildIDS = (todo)=>{
+                return {
+                    editID : "edit_" + todo._id,
+                    deleteID : "delete_" + todo._id,
+                    listItemID : "listItem_" + todo._id,
+                    todoID : "todo_" + todo._id
+                }
+            }
+
+            const buildTemplate = (todo,ids)=>{
+                return `<li class="list-group-item" id="${ids.listItemID}">
+                            <div class="row">
+                                <div class="col-md-4" id="${ids.todoID}">${todo.memberPhone}</div>
+                                <div class="col-md-4"></div>
+                            </div>
+                       </li>`;
+            }
+
+            const displayTodos = (data)=>{
+                display.append(`<div>${data.t}</div>`)
+                data.m.forEach((todo)=>{
+                    let ids = buildIDS(todo);
+                    display.append(buildTemplate(todo,ids));
+                });
+
+            }
+
+
+
+        });
+    </script>
+</body>
+</html>
