@@ -50,6 +50,10 @@
                         <div class="form-group" id="imgContainer"></div>
                         <button class="btn btn-primary" id="addImg">add</button>
                         -->
+                        <label for="phone">video</label>
+                        <input class="form-control" id="videoUrl" class='videoUrlAdded' type="text" name="name"  placeholder="videoUrl" />
+
+
                     </div>
 
                     
@@ -65,7 +69,6 @@
     </div>
 
 
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -76,6 +79,7 @@
 
         $(document).ready(()=>{
 
+// https://www.youtube.com/embed/pHSpuq6JYws?rel=0&amp;controls=0&amp;showinfo=0
 
             // $( "#imgUrl" ).blur(function() {
             //     $("#showImg").attr("src",$("#imgUrl").val())
@@ -317,12 +321,20 @@
 
                 imgUrlArray=imgUrlStrings.split(",");
 
+
+                let videoUrlArray=[];
+                let videoUrlStrings=$('#videoUrl').val();
+
+                videoUrlArray=videoUrlStrings.split(",");
+
+
+
                 let endDate=new Date($('#endDate').val());
                 let validDate=endDate instanceof Date && !isNaN(endDate);
                 if(validDate){
                     fetch('/setd',{//参加团
                         method : 'post',
-                        body : JSON.stringify({t:t,endDate:$('#endDate').val(),imgUrl:imgUrlArray}),
+                        body : JSON.stringify({t:t,endDate:$('#endDate').val(),imgUrl:imgUrlArray,videoUrl:videoUrlArray}),
                         headers : {
                             "Content-Type" : "application/json; charset=utf-8"
                         }

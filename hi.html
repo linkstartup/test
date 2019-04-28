@@ -128,7 +128,9 @@
                 for(let i=0;i<data.imgUrl.length;i++){
                     $("#imgContainer").append(`<img src="${data.imgUrl[i]}" alt="">`)
                 }
-
+                for(let i=0;i<data.videoUrl.length;i++){
+                    $("#imgContainer").append(`<video src="${data.videoUrl[i]}"></video>`)
+                }
 
                 let diffSecond=data.diffSecond;
 

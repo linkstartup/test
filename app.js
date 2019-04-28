@@ -48,7 +48,8 @@ app.post('/setd', (req, res) => { //设置每个团开奖时间，团的图片�
     }, {
         $set: {
             endDate: req.body.endDate,
-            imgUrl: req.body.imgUrl
+            imgUrl: req.body.imgUrl,
+            videoUrl: req.body.videoUrl
         }
     }, (err, result) => {
         res.json(result);
@@ -96,6 +97,14 @@ app.post('/getT', (req, res) => { //查询每个团开奖时间，团的图片�
             } else {
                 result.imgUrl = []
             }
+
+            if (documents[0].videoUrl) {
+                result.videoUrl = documents[0].videoUrl
+
+            } else {
+                result.videoUrl = []
+            }
+
             console.log(result)
             res.json(result);
 
