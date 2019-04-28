@@ -57,6 +57,8 @@
             <div class="col-lg-2"></div>
         </div>
 
+        <div class="row" id="imgContainer"></div>
+
            
     </div>
 
@@ -123,6 +125,11 @@
                 return response.json();
             }).then((data)=>{
                 console.log(data)
+                for(let i=0;i<data.imgUrl.length;i++){
+                    $("#imgContainer").append(`<img src="${data.imgUrl[i]}" alt="">`)
+                }
+
+
                 let diffSecond=data.diffSecond;
 
                 startCount(diffSecond);

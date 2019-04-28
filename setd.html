@@ -39,17 +39,17 @@
                 <div id="form">
                     <div class="form-group" id="userInfo">
                         <label for="phone">endDate</label>
-                        <input class="form-control" id="endDate" type="tel" name="phone"  placeholder="2019-04-28 17:55:50" />
+                        <input class="form-control" id="endDate" type="tel" name="phone"  value="2019-04-28 17:55:50" />
 
 
                         <label for="phone">imgUrl</label>
-                        <input class="form-control" id="imgUrl" type="text" name="name"  placeholder="imgUrl" />
-                        <label for="" id="show">show</label>
-                        <img src="" alt="" id="showImg">
-
+                        <input class="form-control" id="imgUrl" class='imgUrlAdded' type="text" name="name"  placeholder="imgUrl" />
+<!--                         <div for="" id="show">show</div>
+                        <img src="" alt="" id="showImg"> -->
+<!-- 
                         <div class="form-group" id="imgContainer"></div>
                         <button class="btn btn-primary" id="addImg">add</button>
-                       
+                        -->
                     </div>
 
                     
@@ -77,14 +77,22 @@
         $(document).ready(()=>{
 
 
-            $("#show").click(function(){
-                $("#showImg").attr("src",$("#imgUrl").val())
-            })
+            // $( "#imgUrl" ).blur(function() {
+            //     $("#showImg").attr("src",$("#imgUrl").val())
+            // });
 
-            $("#addImg").click(function(){
-                $("#imgContainer").append(`<label for="phone">imgUrl</label><input class="form-control" id="imgUrl" type="text" name="name"  placeholder="imgUrl" /><label for="" id="show">show</label><img src="" alt="" id="showImg">`)
-            })
+            // $("#show").click(function(){
+            //     $("#showImg").attr("src",$("#imgUrl").val())
+            // })
 
+            // let imgNumber=0;
+            // $("#addImg").click(function(){
+            //     $("#imgContainer").append(`<label for="phone">${imgNumber++}</label><input class="form-control" class="imgUrlAdded" type="text" name="name"  placeholder="imgUrl" /><div for="" class="showImg">show</div><img src="" alt="" class="showImgDiv">`)
+            // })
+
+
+
+    
 
 
             const display = $("#display");
@@ -302,19 +310,19 @@
 
 
 
-
             $("#join").click(()=>{
 
-                let imgUrl=[];
-                imgUrl.push({number:'0',url:$('#imgUrl').val()})
-                
+                let imgUrlArray=[];
+                let imgUrlStrings=$('#imgUrl').val();
+
+                imgUrlArray=imgUrlStrings.split(",");
 
                 let endDate=new Date($('#endDate').val());
                 let validDate=endDate instanceof Date && !isNaN(endDate);
                 if(validDate){
                     fetch('/setd',{//参加团
                         method : 'post',
-                        body : JSON.stringify({t:t,endDate:$('#endDate').val(),imgUrl:imgUrl}),
+                        body : JSON.stringify({t:t,endDate:$('#endDate').val(),imgUrl:imgUrlArray}),
                         headers : {
                             "Content-Type" : "application/json; charset=utf-8"
                         }
