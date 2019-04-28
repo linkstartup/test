@@ -28,6 +28,39 @@ app.get('/', (req, res) => {
 
 
 
+//设置团的详情
+app.get('/setd', (req, res) => {
+    res.sendFile(path.join(__dirname, 'setd.html'));
+});
+
+
+
+app.post('/setd', (req, res) => { //设置每个团开奖时间，团的图片对象数组
+
+
+
+    console.log(req.body.endDate)
+    console.log(req.body)
+
+
+    db.getDB().collection(collection3).updateOne({
+        _id: new ObjectId(req.body.t)
+    }, {
+        $set: {
+            endDate: req.body.endDate,
+            imgUrl: req.body.imgUrl
+        }
+    }, (err, result) => {
+        res.json(result);
+
+    })
+
+
+
+});
+
+
+
 //倒计时
 //倒计时开奖
 // let endDate = new Date("2019-04-28 03:06:00");
@@ -36,11 +69,39 @@ app.get('/', (req, res) => {
 
 
 
-app.post('/getT', (req, res) => {
+app.post('/getT', (req, res) => { //查询每个团开奖时间，团的图片对象数组
     console.log(req.body.t)
-    res.json({
-        diffSecond: parseInt((new Date("2019-04-28 03:53:50") - new Date()) / 1000)
-    });
+
+
+    let result = {};
+
+    db.getDB().collection(collection3).find({
+        _id: new ObjectId(req.body.t)
+    }).toArray((err, documents) => {
+        console.log(documents)
+        if (documents.length == 0) { //团不存在
+
+        } else {
+            if (documents[0].endDate) {
+                result.diffSecond = parseInt((new Date(documents[0].endDate) - new Date()) / 1000);
+
+            } else {
+                result.diffSecond = parseInt((new Date("2019-04-28 17:55:50") - new Date()) / 1000)
+
+            }
+
+            if (documents[0].imgUrl) {
+                result.imgUrl = documents[0].imgUrl
+
+            } else {
+                result.imgUrl = []
+            }
+            console.log(result)
+            res.json(result);
+
+        }
+    })
+
 
 });
 
@@ -542,45 +603,9 @@ app.get('/tuanzhang', (req, res) => {
     res.sendFile(path.join(__dirname, 'tuanzhang.html'));
 });
 
-// app.post('/tuanzhangjoin', (req, res) => {
-
-//     db.getDB().collection(collection4).find({
-//         tuanzhangPhone: req.body.tuanzhangPhone
-//     }).toArray((err, documents) => {
-//         if (documents.length == 0) {
-//             //团长建团
-//             db.getDB().collection(collection4).insertOne(req.body, (err, result) => { //插入团长表
-//                 //自动建立第一个团
-//                 db.getDB().collection(collection3).insertOne({ //创建抽奖表
-//                     t: req.body.tuanzhangPhone,
-//                     m: []
-//                 }, (err, result) => {
-//                     //返回团id
-//                     console.log(result.insertedId)
-
-//                     res.json({
-//                         // msg: server + "tuan?t=" + result.insertedId,
-//                         msg: server + "hi?t=" + result.insertedId,
-//                         error: null
-//                     });
-
-//                 });
-
-//             });
-//         } else {
-//             res.json({
-//                 msg: "exist!!!",
-//                 error: null
-//             });
-//         }
 
 
-//     });
-
-
-// });
-
-
+//团长创建新团
 app.post('/tuanzhangcreate', (req, res) => {
 
 

@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Todo Crud Application</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+
+                <ul class="list-group" id="display">
+                </ul>
+            </div>
+            <div class="col-lg-2"></div>
+        </div> 
+        <br>
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="alert" role="alert" id="message">
+                    
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div id="form">
+                    <div class="form-group" id="userInfo">
+                        <label for="phone">endDate</label>
+                        <input class="form-control" id="endDate" type="tel" name="phone"  placeholder="2019-04-28 17:55:50" />
+
+
+                        <label for="phone">imgUrl</label>
+                        <input class="form-control" id="imgUrl" type="text" name="name"  placeholder="imgUrl" />
+                        <label for="" id="show">show</label>
+                        <img src="" alt="" id="showImg">
+
+                        <div class="form-group" id="imgContainer"></div>
+                        <button class="btn btn-primary" id="addImg">add</button>
+                       
+                    </div>
+
+                    
+                </div>
+                <button id="join" class="btn btn-primary">join</button>
+
+
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
+           
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script>
+
+        $(document).ready(()=>{
+
+
+            $("#show").click(function(){
+                $("#showImg").attr("src",$("#imgUrl").val())
+            })
+
+            $("#addImg").click(function(){
+                $("#imgContainer").append(`<label for="phone">imgUrl</label><input class="form-control" id="imgUrl" type="text" name="name"  placeholder="imgUrl" /><label for="" id="show">show</label><img src="" alt="" id="showImg">`)
+            })
+
+
+
+            const display = $("#display");
+            const message = $("#message");
+            const form = $("#form");
+
+
+            message.hide();
+
+            const displayMessage = (msg)=>{
+                // successful
+
+                message.removeClass('alert-danger');
+                message.addClass('alert-success');
+                message.html(msg);
+                message.show();
+                
+
+            }
+
+
+
+
+
+            function getQueryVariable(variable){
+                   var query = window.location.search.substring(1);
+                   var vars = query.split("&");
+                   for (var i=0;i<vars.length;i++) {
+                           var pair = vars[i].split("=");
+                           if(pair[0] == variable){return pair[1];}
+                   }
+                   return(false);
+            }
+
+            var t=getQueryVariable("t");
+
+
+
+            // fetch('/getT',{//抽奖
+            //     method : 'post',
+            //     body : JSON.stringify({t:t}),
+            //     headers : {
+            //         "Content-Type" : "application/json; charset=utf-8"
+            //     }
+            // }).then((response)=>{
+            //     return response.json();
+            // }).then((data)=>{
+            //     console.log(data)
+            //     let diffSecond=data.diffSecond;
+
+            //     startCount(diffSecond);
+
+            //     var id = setInterval(function(){
+            //         console.log(diffSecond)
+            //         diffSecond--;
+            //         if(diffSecond>=0){
+            //             var offset = moment.duration(diffSecond, 'seconds');
+            //             var month = offset.months();
+            //             var day = offset.days();
+            //             var hour = offset.hours();
+            //             var minute = offset.minutes();
+            //             var second = offset.seconds();
+
+            //             var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
+            //             $("#timer").html(diff.format("HH:mm:ss"));
+            //         }else{
+            //             clearInterval(id)
+                                
+            //             fetch('/hit',{//查询当前团
+            //                 method : 'post',
+            //                 body : JSON.stringify({t:t}),
+            //                 headers : {
+            //                     "Content-Type" : "application/json; charset=utf-8"
+            //                 }
+            //             }).then((response)=>{
+            //                 return response.json();
+            //             }).then((data)=>{
+            //                 if(data.m.length<10){
+
+            //                     $("#timer").html('Game Over')
+            //                     $("#userInfo").hide()
+
+
+            //                 }else{//时间到，且人数满
+            //                     fetch('/hiBtn',{//抽奖
+            //                         method : 'post',
+            //                         body : JSON.stringify({t:t}),
+            //                         headers : {
+            //                             "Content-Type" : "application/json; charset=utf-8"
+            //                         }
+            //                     }).then((response)=>{
+            //                         return response.json();
+            //                     }).then((data)=>{
+            //                         $("#timer").html(data.memberPhone)
+            //                         console.log(data)
+                                    
+            //                     })
+                               
+            //                 }
+                            
+            //             })
+            
+
+            //         }
+            //     },1000);
+
+                
+            // })
+
+
+
+            //倒计时开奖
+            
+            // function startCount(diffSecond){
+            //     console.log(diffSecond)
+            //     if(diffSecond>=0){
+            //         var offset = moment.duration(diffSecond, 'seconds');
+            //         var month = offset.months();
+            //         var day = offset.days();
+            //         var hour = offset.hours();
+            //         var minute = offset.minutes();
+            //         var second = offset.seconds();
+
+            //         var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
+            //         $("#timer").html(diff.format("HH:mm:ss"));
+            //     }else{//时间到
+            //         fetch('/hit',{//查询当前团人数
+            //             method : 'post',
+            //             body : JSON.stringify({t:t}),
+            //             headers : {
+            //                 "Content-Type" : "application/json; charset=utf-8"
+            //             }
+            //         }).then((response)=>{
+            //             return response.json();
+            //         }).then((data)=>{
+            //             if(data.m.length<10){//时间到，人未满
+            //                 $("#timer").html('Game Over')
+            //                 $("#userInfo").hide()
+
+
+
+            //             }else{//时间到，且人数满
+            //                 fetch('/hiBtn',{//抽奖
+            //                     method : 'post',
+            //                     body : JSON.stringify({t:t}),
+            //                     headers : {
+            //                         "Content-Type" : "application/json; charset=utf-8"
+            //                     }
+            //                 }).then((response)=>{
+            //                     return response.json();
+            //                 }).then((data)=>{
+            //                     $("#timer").html(data.memberPhone)
+            //                     console.log(data)
+                                
+            //                 })
+                           
+            //             }
+                        
+            //         })                    
+            //     }
+            // }
+
+
+
+
+
+
+            function getTodos(){
+
+                fetch('/hit',{//查询当前团
+                    method : 'post',
+                    body : JSON.stringify({t:t}),
+                    headers : {
+                        "Content-Type" : "application/json; charset=utf-8"
+                    }
+                }).then((response)=>{
+                    return response.json();
+                }).then((data)=>{
+                    if(data.m.length<10){
+                        display.append(`<div>captain ${data.t} </div>`)                    
+                        display.append(`<div>need ${10-data.m.length} more</div>`)
+                        displayTodos(data);
+
+                    }else{
+                        if(data.haveWinner){
+                            timer.html(data.haveWinner.memberPhone)
+
+                        }
+                        display.append(`<div>captain ${data.t} </div>`)                    
+                        display.append(`<div>full</div>`)
+                        $("#userInfo").hide()
+                        displayTodos(data);
+                       
+                    }
+                    
+                });
+
+            } 
+
+            // getTodos()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            $("#join").click(()=>{
+
+                let imgUrl=[];
+                imgUrl.push({number:'0',url:$('#imgUrl').val()})
+                
+
+                let endDate=new Date($('#endDate').val());
+                let validDate=endDate instanceof Date && !isNaN(endDate);
+                if(validDate){
+                    fetch('/setd',{//参加团
+                        method : 'post',
+                        body : JSON.stringify({t:t,endDate:$('#endDate').val(),imgUrl:imgUrl}),
+                        headers : {
+                            "Content-Type" : "application/json; charset=utf-8"
+                        }
+                    }).then((response)=>{
+                        return response.json();
+                    }).then((data)=>{
+                            console.log(data)
+                            // displayMessage(data.msg);
+                        
+                    });                    
+                }else{
+                    console.log(endDate)
+                }
+              
+
+
+                
+
+
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+            const displayTodos = (data)=>{
+                data.m.forEach((todo)=>{
+                    display.append(
+                        `<li class="list-group-item" id="">
+                            <div class="row">
+                                <div class="col-md-4" id="">${todo.memberPhone}</div>
+                                <div class="col-md-4">${todo.memberName}</div>
+                            </div>
+                       </li>`);
+                });
+            }
+
+
+
+        });
+    </script>
+</body>
+</html>
