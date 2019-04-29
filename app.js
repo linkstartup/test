@@ -223,12 +223,12 @@ app.post('/davet', (req, res) => {
                     }
                 });
             } else { //是老成员，已经参加过
+                console.log('old')
                 const joinedts = documents[0].joinedt;
 
                 let existSameT = joinedts.filter((joinedt) => {
                     return joinedt == req.body.t
                 });
-
 
 
                 //查询参加次数
@@ -303,32 +303,29 @@ app.post('/davet', (req, res) => {
                                 return document.m.length < 10
                             });
 
-                            let existedSame = [];
 
-                            let notExistSameT = [];
+                            if (notfull.length > 0) { //当前团长，存在没有满的团
 
-                            if (notfull.length > 0) { //存在没有满的团
-                                for (let i = 0; i < joinedts.length; i++) {
-                                    for (let j = 0; j < notfull.length; i++) {
-                                        if (joinedts[i] == notfull[j]) {
-                                            existedSame.push(joinedts[i]) //相同的团id
-                                        }
-                                    }
-                                }
-
-                                let [...joinedtsCopy] = joinedts;
-
-                                //notExistSameT=joinedts-existedSame
                                 Array.prototype.remove = function(val) {
                                     var index = this.indexOf(val);
                                     if (index > -1) {
                                         this.splice(index, 1);
                                     }
                                 };
-                                for (let i = 0; i < existedSame.length; i++) {
-
-                                    notExistSameT = joinedtsCopy.remove(existedSame[i])
+                                var notExistSameT = [];
+                                for (let i = 0; i < notfull.length; i++) {
+                                    notExistSameT.push(notfull[i]._id.toString())
                                 }
+
+                                console.log(notExistSameT)
+                                console.log(joinedts)
+
+                                for (let i = 0; i < joinedts.length; i++) {
+
+                                    notExistSameT.remove(joinedts[i].toString())
+                                }
+
+                                console.log(notExistSameT)
 
 
 
@@ -337,6 +334,7 @@ app.post('/davet', (req, res) => {
                                 if (notExistSameT.length > 0) {
 
                                     let existedTuanId = notExistSameT[0];
+                                    console.log(existedTuanId)
 
                                     req.body.tuanzhangId = tuanzhangId;
                                     req.body.tuanId = existedTuanId;
