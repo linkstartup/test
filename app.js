@@ -22,8 +22,400 @@ const app = express();
 app.use(bodyParser.json());
 
 // serve static html file to user
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'index.html'));
+// });
+
+//dave团长
+app.get('/dave', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dave.html'));
+});
+
+
+//抽奖
+app.post('/davec', (req, res) => {
+
+    db.getDB().collection(collection3).find({
+        _id: new ObjectId(req.body.t)
+    }).toArray((err, documents) => {
+        if (documents[0] && documents[0].haveWinner) {
+            res.json(documents[0].haveWinner)
+
+        } else {
+
+            let r = getRandomInt(0, 9);
+
+            let w = documents[0].m;
+
+            let winner = w[r];
+
+
+
+            db.getDB().collection(collection3).updateOne({
+                _id: new ObjectId(req.body.t)
+            }, {
+                $set: {
+                    haveWinner: winner
+                }
+            }, (err, result) => {
+                res.json(winner);
+
+            })
+
+
+
+        }
+
+    })
+
+
+
+});
+
+
+//参加团
+app.post('/davet', (req, res) => {
+
+    db.getDB().collection(collection3).find({
+        _id: new ObjectId(req.body.t)
+    }).toArray((err, documents) => {
+
+        let tuanzhangId = documents[0].t;
+
+
+
+        db.getDB().collection(collection5).find({
+            memberPhone: req.body.memberPhone
+        }).toArray((err, documents) => {
+            if (documents.length == 0) { //是新成员
+
+
+                //判断当前的团是否满了
+                db.getDB().collection(collection3).find({
+                    _id: new ObjectId(req.body.t)
+                }).toArray((err, documents) => {
+
+
+                    if (documents[0].m.length < 10) { //没有满
+                        console.log('not full join')
+                        req.body.tuanId = req.body.t;
+                        req.body.joinedt = [req.body.t];
+                        req.body.time = 1; //第一次参加
+                        req.body.tuanzhangId = tuanzhangId;
+
+                        db.getDB().collection(collection3).updateOne({ //进入抽奖表
+                            _id: new ObjectId(req.body.t)
+                        }, {
+                            $push: {
+                                m: req.body
+                            }
+                        }, {
+                            returnOriginal: false
+                        }, (err, result) => {
+                            db.getDB().collection(collection5).insertOne(req.body, (err, result) => { //加入成员表
+
+                                res.json({
+                                    msg: "success!",
+                                    error: null
+                                });
+
+                            });
+
+                        });
+
+
+
+                    } else { //当前的团已经满了
+                        console.log('full')
+
+                        //查看当前团长是否有没有满的团
+                        db.getDB().collection(collection3).find({
+                            t: tuanzhangId
+                        }).toArray((err, documents) => {
+                            let notfull = documents.filter((document) => {
+                                return document.m.length < 10
+                            });
+                            if (notfull.length > 0) { //存在没有满的团
+                                let existedTuanId = notfull[0]._id;
+
+                                req.body.tuanzhangId = tuanzhangId;
+                                req.body.tuanId = existedTuanId;
+                                req.body.joinedt = [existedTuanId];
+
+                                req.body.time = 1; //第一次参加
+
+                                db.getDB().collection(collection3).updateOne({ //进入抽奖表
+                                    _id: new ObjectId(existedTuanId)
+                                }, {
+                                    $push: {
+                                        m: req.body
+                                    }
+                                }, {
+                                    returnOriginal: false
+                                }, (err, result) => {
+                                    db.getDB().collection(collection5).insertOne(req.body, (err, result) => { //加入成员表
+
+
+                                        res.json({
+                                            full: true,
+                                            msg: server + "dave?t=" + existedTuanId,
+                                            error: null
+                                        });
+
+                                    });
+
+                                });
+
+                            } else { //当前团长的团都满了
+
+                                db.getDB().collection(collection3).insertOne({ //创建抽奖表
+                                    t: tuanzhangId,
+                                    m: [{
+                                        tuanzhangId: tuanzhangId,
+                                        memberPhone: tuanzhangId,
+                                        memberName: tuanzhangId,
+                                        time: 1,
+                                        tuanId: '',
+                                        role: 'tuanzhang'
+
+                                    }]
+                                }, (err, result) => {
+                                    //返回团id
+                                    let newTuanId = result.insertedId;
+                                    let newTuanIdString = newTuanId.toString();
+                                    req.body.tuanId = newTuanId;
+                                    req.body.joinedt = [newTuanIdString];
+
+                                    req.body.time = 1; //第一次参加
+                                    req.body.tuanzhangId = tuanzhangId;
+
+
+                                    db.getDB().collection(collection3).updateOne({ //进入抽奖表
+                                        _id: new ObjectId(newTuanId)
+                                    }, {
+                                        $push: {
+                                            m: req.body
+                                        }
+                                    }, {
+                                        returnOriginal: false
+                                    }, (err, result) => {
+
+                                        db.getDB().collection(collection5).insertOne(req.body, (err, result) => { //加入成员表
+
+                                            res.json({
+                                                full: true,
+                                                msg: server + "dave?t=" + newTuanId,
+                                                error: null
+                                            });
+
+                                        });
+                                    });
+
+                                });
+
+                            }
+
+
+                        });
+
+
+
+                    }
+                });
+            } else { //是老成员，已经参加过
+
+                let existSameT = documents[0].joinedt.filter((joinedt) => {
+                    return joinedt == req.body.t
+                });
+                if (existSameT.length > 0) { //加入过同一个团
+                    res.json({
+                        msg: 'existed'
+                    })
+                } else {
+
+
+                    //查询参加次数
+                    let joinTime = documents[0].time
+                    //判断当前的团是否满了
+                    db.getDB().collection(collection3).find({
+                        _id: new ObjectId(req.body.t)
+                    }).toArray((err, documents) => {
+
+
+                        if (documents[0].m.length < 10) { //没有满
+                            console.log('not full join')
+                            req.body.tuanId = req.body.t;
+                            req.body.time = ++joinTime; //参加次数更新
+                            req.body.tuanzhangId = tuanzhangId;
+
+
+
+                            db.getDB().collection(collection3).updateOne({ //进入抽奖表
+                                _id: new ObjectId(req.body.t)
+                            }, {
+                                $push: {
+                                    m: req.body
+                                }
+                            }, {
+                                returnOriginal: false
+                            }, (err, result) => { //更新成员表
+
+
+
+                                db.getDB().collection(collection5).updateOne({
+                                    memberPhone: req.body.memberPhone
+                                }, {
+                                    $set: {
+                                        time: req.body.time
+                                    },
+                                    $push: {
+                                        joinedt: req.body.t
+                                    }
+                                }, (err, result) => {
+                                    console.log(req.body.time)
+                                    res.json({
+                                        msg: "success!",
+                                        error: null
+                                    });
+                                })
+
+
+
+                            });
+
+
+
+                        } else { //当前的团已经满了
+                            console.log('full')
+
+                            //查看当前团长是否有没有满的团
+                            db.getDB().collection(collection3).find({
+                                t: tuanzhangId
+                            }).toArray((err, documents) => {
+                                let notfull = documents.filter((document) => {
+                                    return document.m.length < 10
+                                });
+                                if (notfull.length > 0) { //存在没有满的团
+                                    let existedTuanId = notfull[0]._id;
+
+                                    req.body.tuanzhangId = tuanzhangId;
+                                    req.body.tuanId = existedTuanId;
+                                    req.body.time = ++joinTime; //参加次数更新
+
+                                    db.getDB().collection(collection3).updateOne({ //进入抽奖表
+                                        _id: new ObjectId(existedTuanId)
+                                    }, {
+                                        $push: {
+                                            m: req.body
+                                        }
+                                    }, {
+                                        returnOriginal: false
+                                    }, (err, result) => { //更新成员表
+
+
+
+                                        db.getDB().collection(collection5).updateOne({
+                                            memberPhone: req.body.memberPhone
+                                        }, {
+                                            $set: {
+                                                time: req.body.time
+                                            },
+
+                                            $push: {
+                                                joinedt: existedTuanId
+                                            }
+                                        }, (err, result) => {
+
+                                            res.json({
+                                                full: true,
+                                                msg: server + "dave?t=" + existedTuanId,
+                                                error: null
+                                            });
+                                        })
+
+                                    });
+
+                                } else { //当前团长的团都满了
+
+                                    db.getDB().collection(collection3).insertOne({ //创建抽奖表
+                                        t: tuanzhangId,
+                                        m: [{
+                                            tuanzhangId: tuanzhangId,
+                                            memberPhone: tuanzhangId,
+                                            memberName: tuanzhangId,
+                                            time: 1,
+                                            tuanId: '',
+                                            role: 'tuanzhang'
+
+                                        }]
+                                    }, (err, result) => {
+                                        //返回团id
+                                        let newTuanId = result.insertedId;
+                                        let newTuanIdInserted = result.insertedId.toString()
+                                        req.body.tuanId = newTuanId;
+                                        req.body.time = ++joinTime; //参加次数更新
+                                        req.body.tuanzhangId = tuanzhangId;
+
+
+                                        db.getDB().collection(collection3).updateOne({ //进入抽奖表
+                                            _id: new ObjectId(newTuanId)
+                                        }, {
+                                            $push: {
+                                                m: req.body
+                                            }
+                                        }, {
+                                            returnOriginal: false
+                                        }, (err, result) => { //更新成员表
+
+
+
+                                            db.getDB().collection(collection5).updateOne({
+                                                memberPhone: req.body.memberPhone
+                                            }, {
+                                                $set: {
+                                                    time: req.body.time
+                                                },
+                                                $push: {
+                                                    joinedt: newTuanIdInserted
+                                                }
+                                            }, (err, result) => {
+
+                                                res.json({
+                                                    full: true,
+                                                    msg: server + "dave?t=" + newTuanId,
+                                                    error: null
+                                                });
+                                            })
+
+
+                                        });
+
+                                    });
+
+                                }
+
+
+                            });
+
+
+
+                        }
+                    });
+
+
+
+                }
+
+
+
+            }
+
+
+        });
+    })
+
+
+
 });
 
 
@@ -71,7 +463,6 @@ app.post('/setd', (req, res) => { //设置每个团开奖时间，团的图片�
 
 
 app.post('/getT', (req, res) => { //查询每个团开奖时间，团的图片对象数组
-    console.log(req.body.t)
 
 
     let result = {};
@@ -79,7 +470,6 @@ app.post('/getT', (req, res) => { //查询每个团开奖时间，团的图片�
     db.getDB().collection(collection3).find({
         _id: new ObjectId(req.body.t)
     }).toArray((err, documents) => {
-        console.log(documents)
         if (documents.length == 0) { //团不存在
 
         } else {
@@ -105,7 +495,6 @@ app.post('/getT', (req, res) => { //查询每个团开奖时间，团的图片�
                 result.videoUrl = []
             }
 
-            console.log(result)
             res.json(result);
 
         }
@@ -267,7 +656,7 @@ app.post('/hi', (req, res) => {
             } else {
                 res.json({
                     msg: "exist!!!",
-                    error: null
+                    error: null,
                 });
             }
 
@@ -297,7 +686,6 @@ app.post('/hit', (req, res) => {
 
 //抽奖
 app.post('/hiBtn', (req, res) => {
-
 
 
     db.getDB().collection(collection3).find({
@@ -749,43 +1137,43 @@ function setTreeData(source) {
 
 
 //create
-app.post('/', (req, res, next) => {
-    // Document to be inserted
-    const userInput = req.body;
+// app.post('/', (req, res, next) => {
+//     // Document to be inserted
+//     const userInput = req.body;
 
 
-    db.getDB().collection(collection).find({
-        todo: userInput.todo
-    }).toArray((err, documents) => {
-        if (err)
-            console.log(err);
-        else {
-            if (documents.length == 0) {
-                db.getDB().collection(collection).insertOne(userInput, (err, result) => {
-                    if (err) {
-                        const error = new Error("Failed to insert Todo Document");
-                        error.status = 400;
-                        next(error);
-                    } else
-                        res.json({
-                            result: result,
-                            document: result.ops[0],
-                            msg: "Successfully inserted Todo!!!",
-                            error: null
-                        });
-                });
-            } else {
-                const error = new Error("exist");
-                error.status = 400;
-                next(error);
-            }
+//     db.getDB().collection(collection).find({
+//         todo: userInput.todo
+//     }).toArray((err, documents) => {
+//         if (err)
+//             console.log(err);
+//         else {
+//             if (documents.length == 0) {
+//                 db.getDB().collection(collection).insertOne(userInput, (err, result) => {
+//                     if (err) {
+//                         const error = new Error("Failed to insert Todo Document");
+//                         error.status = 400;
+//                         next(error);
+//                     } else
+//                         res.json({
+//                             result: result,
+//                             document: result.ops[0],
+//                             msg: "Successfully inserted Todo!!!",
+//                             error: null
+//                         });
+//                 });
+//             } else {
+//                 const error = new Error("exist");
+//                 error.status = 400;
+//                 next(error);
+//             }
 
-        }
-    });
+//         }
+//     });
 
 
 
-});
+// });
 
 
 

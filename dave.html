@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Todo Crud Application</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <button class="btn btn-primary" id="timer">winner</button>                
+
+                <ul class="list-group" id="display">
+                </ul>
+            </div>
+            <div class="col-lg-2"></div>
+        </div> 
+        <br>
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="alert" role="alert" id="message">
+                    
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <form id="form">
+                    <div class="form-group" id="userInfo">
+                        <label for="phone">phone +62</label>
+                        <input class="form-control" id="phoneUserInput" type="tel" name="phone"  placeholder="81386139021" />
+
+
+                        <label for="phone">name </label>
+                        <input class="form-control" id="nameUserInput" type="text" name="name"  placeholder="name" />
+
+
+                       
+                        <button id="join" type="submit" class="btn btn-primary">join</button>
+                    </div>
+                    
+                </form>
+
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
+        <div class="row" id="imgContainer"></div>
+
+           
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script>
+
+        $(document).ready(()=>{
+
+
+
+            const display = $("#display");
+            const message = $("#message");
+            const form = $("#form");
+            const phoneUserInput=$("#phoneUserInput");
+            const join=$("#join");
+            const timer=$("#timer")
+
+
+            message.hide();
+
+            const displayMessage = (flag,msg)=>{
+
+                message.removeClass('alert-danger');
+                message.addClass('alert-success');
+                message.html(msg);
+                message.show();
+                
+
+            }
+
+
+
+
+
+            function getQueryVariable(variable){
+                   var query = window.location.search.substring(1);
+                   var vars = query.split("&");
+                   for (var i=0;i<vars.length;i++) {
+                           var pair = vars[i].split("=");
+                           if(pair[0] == variable){return pair[1];}
+                   }
+                   return(false);
+            }
+
+            var t=getQueryVariable("t")?getQueryVariable("t"):'5cc569db2d864734d4df6211';
+
+
+
+
+     $.ajax({
+             type: "POST",
+             url: "http://localhost/getT",
+             data: JSON.stringify({t:t}),
+             contentType: "application/json; charset=utf-8",
+             crossDomain: true,
+             dataType: "json",
+             success: function (data, status, jqXHR) {
+
+                for(let i=0;i<data.imgUrl.length;i++){
+                    $("#imgContainer").append(`<img src="${data.imgUrl[i]}" alt="">`)
+                }
+                for(let i=0;i<data.videoUrl.length;i++){
+                    $("#imgContainer").append(`<iframe width="560" height="315" src="${data.videoUrl[i]}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`)
+                }
+
+                let diffSecond=data.diffSecond;
+
+                startCount(diffSecond);
+
+                var id = setInterval(function(){
+                    diffSecond--;
+                    console.log(diffSecond)
+
+                    if(diffSecond>=0){
+                        var offset = moment.duration(diffSecond, 'seconds');
+                        var month = offset.months();
+                        var day = offset.days();
+                        var hour = offset.hours();
+                        var minute = offset.minutes();
+                        var second = offset.seconds();
+
+                        var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
+                        $("#timer").html(diff.format("HH:mm:ss"));
+                    }else{//时间到
+                         clearInterval(id)
+
+                         $.ajax({
+                                 type: "POST",
+                                 url: "http://localhost/hit",
+                                 data: JSON.stringify({t:t}),
+                                 contentType: "application/json; charset=utf-8",
+                                 crossDomain: true,
+                                 dataType: "json",
+                                 success: function (data, status, jqXHR) {
+                                        if(data.m.length<10){//时间到，人未满
+
+                                            $("#timer").html('Game Over')
+                                            // $("#userInfo").hide()
+
+
+                                        }else{//时间到，且人数满
+
+
+
+                                             $.ajax({
+                                                     type: "POST",
+                                                     url: "http://localhost/davec",
+                                                     data: JSON.stringify({t:t}),
+                                                     contentType: "application/json; charset=utf-8",
+                                                     crossDomain: true,
+                                                     dataType: "json",
+                                                     success: function (data, status, jqXHR) {
+                                                                $("#timer").html(data.memberPhone)
+                                            
+                                                     }
+                                                 })
+                                           
+                                        }                                
+                                 }
+                            })                        
+                                
+
+            
+
+                    }
+                },1000);
+
+             },
+
+             error: function (jqXHR, status) {
+                 // error handler
+                 console.log(jqXHR);
+                 console.log('fail' + status.code);
+             }
+          });
+
+
+
+
+
+
+            //倒计时开奖
+            
+            function startCount(diffSecond){
+                    console.log(diffSecond)
+                    if(diffSecond>=0){
+                        var offset = moment.duration(diffSecond, 'seconds');
+                        var month = offset.months();
+                        var day = offset.days();
+                        var hour = offset.hours();
+                        var minute = offset.minutes();
+                        var second = offset.seconds();
+
+                        var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
+                        $("#timer").html(diff.format("HH:mm:ss"));
+                    }else{//时间到
+
+                         $.ajax({
+                                 type: "POST",
+                                 url: "http://localhost/hit",
+                                 data: JSON.stringify({t:t}),
+                                 contentType: "application/json; charset=utf-8",
+                                 crossDomain: true,
+                                 dataType: "json",
+                                 success: function (data, status, jqXHR) {
+                                        if(data.m.length<10){//时间到，人未满
+
+                                            $("#timer").html('Game Over')
+                                            // $("#userInfo").hide()
+
+
+                                        }else{//时间到，且人数满
+
+
+                                             $.ajax({
+                                                     type: "POST",
+                                                     url: "http://localhost/davec",
+                                                     data: JSON.stringify({t:t}),
+                                                     contentType: "application/json; charset=utf-8",
+                                                     crossDomain: true,
+                                                     dataType: "json",
+                                                     success: function (data, status, jqXHR) {
+                                                        $("#timer").html(data.memberPhone)
+                                                     }
+                                                 })                                           
+                                        }                                
+                                 }
+                            })                        
+                                
+
+            
+
+                    }
+                
+
+            }
+
+
+
+
+
+
+            function getTodos(){
+
+
+                 $.ajax({
+                         type: "POST",
+                         url: "http://localhost/hit",
+                         data: JSON.stringify({t:t}),
+                         contentType: "application/json; charset=utf-8",
+                         crossDomain: true,
+                         dataType: "json",
+                         success: function (data, status, jqXHR) {
+                                if(data.m.length<10){
+                                    display.append(`<div>captain ${data.t} </div>`)                    
+                                    display.append(`<div>need ${10-data.m.length} more</div>`)
+                                    displayTodos(data);
+
+                                }else{
+                                    if(data.haveWinner){
+                                        timer.html(data.haveWinner.memberPhone)
+
+                                    }
+                                    display.append(`<div>captain ${data.t} </div>`)                    
+                                    display.append(`<div>full</div>`)
+                                    // $("#userInfo").hide()
+                                    displayTodos(data);
+                                   
+                                }                
+                         }
+                     })
+
+
+
+
+            } 
+
+            getTodos()
+
+
+
+
+
+
+
+
+
+
+
+
+            
+            function validatePhone(phone) {
+              var re = /^[0-9]{11}$/;
+              return re.test(phone);
+            }
+            
+
+
+
+
+
+
+
+
+
+            form.submit((e)=>{
+                e.preventDefault();
+
+                if(validatePhone($('#phoneUserInput').val())){
+                    
+
+
+
+                 $.ajax({
+                         type: "POST",
+                         url: "http://localhost/davet",
+                         data: JSON.stringify({t:t,memberPhone:phoneUserInput.val(),memberName:$('#nameUserInput').val()}),
+                         contentType: "application/json; charset=utf-8",
+                         crossDomain: true,
+                         dataType: "json",
+                         success: function (data, status, jqXHR) {
+                            if(data.full){
+                                window.location.href=data.msg;
+                            }else{
+                                displayMessage(true,data.msg);
+                                display.empty();                        
+                                
+                                getTodos();                        
+                            }               
+                         }
+                     })
+
+
+                }
+
+
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+            const displayTodos = (data)=>{
+                data.m.forEach((todo)=>{
+                    display.append(
+                        `<li class="list-group-item" id="">
+                            <div class="row">
+                                <div class="col-md-4" id="">${todo.memberPhone}</div>
+                                <div class="col-md-4">${todo.memberName}</div>
+                            </div>
+                       </li>`);
+                });
+            }
+
+
+
+        });
+    </script>
+</body>
+</html>

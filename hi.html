@@ -129,8 +129,9 @@
                     $("#imgContainer").append(`<img src="${data.imgUrl[i]}" alt="">`)
                 }
                 for(let i=0;i<data.videoUrl.length;i++){
-                    $("#imgContainer").append(`<video src="${data.videoUrl[i]}"></video>`)
+                    $("#imgContainer").append(`<iframe width="560" height="315" src="${data.videoUrl[i]}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`)
                 }
+
 
                 let diffSecond=data.diffSecond;
 
