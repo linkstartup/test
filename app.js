@@ -223,26 +223,31 @@ app.post('/davet', (req, res) => {
                     }
                 });
             } else { //是老成员，已经参加过
+                const joinedts = documents[0].joinedt;
 
-                let existSameT = documents[0].joinedt.filter((joinedt) => {
+                let existSameT = joinedts.filter((joinedt) => {
                     return joinedt == req.body.t
                 });
-                if (existSameT.length > 0) { //加入过同一个团
-                    res.json({
-                        msg: 'existed'
-                    })
-                } else {
 
 
-                    //查询参加次数
-                    let joinTime = documents[0].time
-                    //判断当前的团是否满了
-                    db.getDB().collection(collection3).find({
-                        _id: new ObjectId(req.body.t)
-                    }).toArray((err, documents) => {
+
+                //查询参加次数
+                let joinTime = documents[0].time
+                //判断当前的团是否满了
+                db.getDB().collection(collection3).find({
+                    _id: new ObjectId(req.body.t)
+                }).toArray((err, documents) => {
 
 
-                        if (documents[0].m.length < 10) { //没有满
+                    if (documents[0].m.length < 10) { //没有满
+
+
+                        if (existSameT.length > 0) { //加入过同一个团
+                            res.json({
+                                msg: 'existed'
+                            })
+                        } else {
+
                             console.log('not full join')
                             req.body.tuanId = req.body.t;
                             req.body.time = ++joinTime; //参加次数更新
@@ -285,18 +290,51 @@ app.post('/davet', (req, res) => {
 
 
 
-                        } else { //当前的团已经满了
-                            console.log('full')
+                        }
 
-                            //查看当前团长是否有没有满的团
-                            db.getDB().collection(collection3).find({
-                                t: tuanzhangId
-                            }).toArray((err, documents) => {
-                                let notfull = documents.filter((document) => {
-                                    return document.m.length < 10
-                                });
-                                if (notfull.length > 0) { //存在没有满的团
-                                    let existedTuanId = notfull[0]._id;
+                    } else { //当前的团已经满了
+                        console.log('full')
+
+                        //查看当前团长是否有没有满的团
+                        db.getDB().collection(collection3).find({
+                            t: tuanzhangId
+                        }).toArray((err, documents) => {
+                            let notfull = documents.filter((document) => {
+                                return document.m.length < 10
+                            });
+
+                            let existedSame = [];
+
+                            let notExistSameT = [];
+
+                            if (notfull.length > 0) { //存在没有满的团
+                                for (let i = 0; i < joinedts.length; i++) {
+                                    for (let j = 0; j < notfull.length; i++) {
+                                        if (joinedts[i] == notfull[j]) {
+                                            existedSame.push(joinedts[i]) //相同的团id
+                                        }
+                                    }
+                                }
+
+                                //notExistSameT=joinedts-existedSame
+                                Array.prototype.remove = function(val) {
+                                    var index = this.indexOf(val);
+                                    if (index > -1) {
+                                        this.splice(index, 1);
+                                    }
+                                };
+                                for (let i = 0; i < existedSame.length;i++){
+
+                                    notExistSameT=joinedts.remove(existedSame[i])
+                                }
+
+
+
+                                //存在没加入过的团
+
+                                if (notExistSameT.length > 0) {
+
+                                    let existedTuanId = notExistSameT[0];
 
                                     req.body.tuanzhangId = tuanzhangId;
                                     req.body.tuanId = existedTuanId;
@@ -335,76 +373,80 @@ app.post('/davet', (req, res) => {
 
                                     });
 
-                                } else { //当前团长的团都满了
+                                } else {
 
-                                    db.getDB().collection(collection3).insertOne({ //创建抽奖表
-                                        t: tuanzhangId,
-                                        m: [{
-                                            tuanzhangId: tuanzhangId,
-                                            memberPhone: tuanzhangId,
-                                            memberName: tuanzhangId,
-                                            time: 1,
-                                            tuanId: '',
-                                            role: 'tuanzhang'
-
-                                        }]
-                                    }, (err, result) => {
-                                        //返回团id
-                                        let newTuanId = result.insertedId;
-                                        let newTuanIdInserted = result.insertedId.toString()
-                                        req.body.tuanId = newTuanId;
-                                        req.body.time = ++joinTime; //参加次数更新
-                                        req.body.tuanzhangId = tuanzhangId;
-
-
-                                        db.getDB().collection(collection3).updateOne({ //进入抽奖表
-                                            _id: new ObjectId(newTuanId)
-                                        }, {
-                                            $push: {
-                                                m: req.body
-                                            }
-                                        }, {
-                                            returnOriginal: false
-                                        }, (err, result) => { //更新成员表
-
-
-
-                                            db.getDB().collection(collection5).updateOne({
-                                                memberPhone: req.body.memberPhone
-                                            }, {
-                                                $set: {
-                                                    time: req.body.time
-                                                },
-                                                $push: {
-                                                    joinedt: newTuanIdInserted
-                                                }
-                                            }, (err, result) => {
-
-                                                res.json({
-                                                    full: true,
-                                                    msg: server + "dave?t=" + newTuanId,
-                                                    error: null
-                                                });
-                                            })
-
-
-                                        });
-
-                                    });
-
+                                    res.json({
+                                        msg: 'existed'
+                                    })
                                 }
 
 
-                            });
+                            } else { //当前团长的团都满了
+
+                                db.getDB().collection(collection3).insertOne({ //创建抽奖表
+                                    t: tuanzhangId,
+                                    m: [{
+                                        tuanzhangId: tuanzhangId,
+                                        memberPhone: tuanzhangId,
+                                        memberName: tuanzhangId,
+                                        time: 1,
+                                        tuanId: '',
+                                        role: 'tuanzhang'
+
+                                    }]
+                                }, (err, result) => {
+                                    //返回团id
+                                    let newTuanId = result.insertedId;
+                                    let newTuanIdInserted = result.insertedId.toString()
+                                    req.body.tuanId = newTuanId;
+                                    req.body.time = ++joinTime; //参加次数更新
+                                    req.body.tuanzhangId = tuanzhangId;
+
+
+                                    db.getDB().collection(collection3).updateOne({ //进入抽奖表
+                                        _id: new ObjectId(newTuanId)
+                                    }, {
+                                        $push: {
+                                            m: req.body
+                                        }
+                                    }, {
+                                        returnOriginal: false
+                                    }, (err, result) => { //更新成员表
 
 
 
-                        }
-                    });
+                                        db.getDB().collection(collection5).updateOne({
+                                            memberPhone: req.body.memberPhone
+                                        }, {
+                                            $set: {
+                                                time: req.body.time
+                                            },
+                                            $push: {
+                                                joinedt: newTuanIdInserted
+                                            }
+                                        }, (err, result) => {
+
+                                            res.json({
+                                                full: true,
+                                                msg: server + "dave?t=" + newTuanId,
+                                                error: null
+                                            });
+                                        })
+
+
+                                    });
+
+                                });
+
+                            }
+
+
+                        });
 
 
 
-                }
+                    }
+                });
 
 
 
