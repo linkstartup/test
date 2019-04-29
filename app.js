@@ -316,6 +316,8 @@ app.post('/davet', (req, res) => {
                                     }
                                 }
 
+                                let [...joinedtsCopy] = joinedts;
+
                                 //notExistSameT=joinedts-existedSame
                                 Array.prototype.remove = function(val) {
                                     var index = this.indexOf(val);
@@ -323,9 +325,9 @@ app.post('/davet', (req, res) => {
                                         this.splice(index, 1);
                                     }
                                 };
-                                for (let i = 0; i < existedSame.length;i++){
+                                for (let i = 0; i < existedSame.length; i++) {
 
-                                    notExistSameT=joinedts.remove(existedSame[i])
+                                    notExistSameT = joinedtsCopy.remove(existedSame[i])
                                 }
 
 
