@@ -301,8 +301,6 @@ $(document).ready(function () {
         success: function success(data, status, jqXHR) {
             console.log(data)
           if (data.full) {
-                        alert(data.msg)
-                        alert('jump')
 
             window.location.href = data.msg;
           } else {

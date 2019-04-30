@@ -158,7 +158,7 @@ app.post('/davet', (req, res) => {
 
                                         res.json({
                                             full: true,
-                                            msg: server + "dave?t=" + existedTuanId,
+                                            msg: "dave?t=" + existedTuanId,
                                             error: null
                                         });
 
@@ -204,7 +204,7 @@ app.post('/davet', (req, res) => {
 
                                             res.json({
                                                 full: true,
-                                                msg: server + "dave?t=" + newTuanId,
+                                                msg: "dave?t=" + newTuanId,
                                                 error: null
                                             });
 
@@ -635,7 +635,7 @@ app.post('/hi', (req, res) => {
 
                                         res.json({
                                             full: true,
-                                            msg: server + "tuan?t=" + existedTuanId,
+                                            msg: "tuan?t=" + existedTuanId,
                                             error: null
                                         });
 
@@ -678,7 +678,7 @@ app.post('/hi', (req, res) => {
 
                                             res.json({
                                                 full: true,
-                                                msg: server + "tuan?t=" + newTuanId,
+                                                msg: "tuan?t=" + newTuanId,
                                                 error: null
                                             });
 
@@ -915,7 +915,7 @@ app.post('/joinTuan', (req, res) => {
 
                                         res.json({
                                             full: true,
-                                            msg: server + "tuan?t=" + existedTuanId,
+                                            msg: "tuan?t=" + existedTuanId,
                                             error: null
                                         });
 
@@ -958,7 +958,7 @@ app.post('/joinTuan', (req, res) => {
 
                                             res.json({
                                                 full: true,
-                                                msg: server + "tuan?t=" + newTuanId,
+                                                msg: "tuan?t=" + newTuanId,
                                                 error: null
                                             });
 
@@ -1005,7 +1005,7 @@ app.post('/myt', (req, res) => {
     }).toArray((err, documents) => {
         if (documents[0] && documents[0].tuanId) {
             res.json({
-                msg: server + "tuan?t=" + documents[0].tuanId,
+                msg: "tuan?t=" + documents[0].tuanId,
                 error: null
             });
         }
@@ -1072,7 +1072,7 @@ app.post('/tuanzhangcreate', (req, res) => {
 
                     res.json({
                         // msg: server + "tuan?t=" + result.insertedId,
-                        msg: server + "hi?t=" + result.insertedId,
+                        msg: "hi?t=" + result.insertedId,
                         error: null
                     });
 
@@ -1097,7 +1097,7 @@ app.post('/tuanzhangcreate', (req, res) => {
 
                 res.json({
                     // msg: server + "tuan?t=" + result.insertedId,
-                    msg: server + "hi?t=" + result.insertedId,
+                    msg: "hi?t=" + result.insertedId,
                     error: null
                 });
 
