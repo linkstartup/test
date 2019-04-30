@@ -130,6 +130,9 @@ class Guaguaka {
 
 </script>
 <script>
+    document.body.addEventListener('touchmove', function (e) {
+  e.preventDefault(); //阻止默认的处理方式(阻止下拉滑动的效果)
+}, {passive: false});
     var options = {
         id: 'guaguaka', //canvas的ID
         imgArr: ['https://www.oshonews.com/wp-content/uploads/2013/08/woman-sexy.jpg', 'http://www.bollywoodspeaks.com/wp-content/uploads/2018/07/Zaara-Yesmin-Black-Bikini-Style-Dress-Photo-BollywoodSpeaks.jpg'], //奖品图片(建议统一大小，canvas是根据该图片大小渲染的)
