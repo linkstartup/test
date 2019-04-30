@@ -299,9 +299,9 @@ $(document).ready(function () {
         success: function success(data, status, jqXHR) {
             console.log(data)
           if (data.full) {
-                        console.log(data)
+                        console.log(data.msg)
 
-            // window.location.href = data.msg;
+            window.location.href = data.msg;
           } else {
             displayMessage(true, data.msg);
             display.empty();
