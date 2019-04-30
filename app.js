@@ -28,7 +28,11 @@ app.use(bodyParser.json());
 
 //dave团长
 app.get('/dave', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dave.html'));
+    res.sendFile(path.join(__dirname, './dist/dave.html'));
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './dist/dave.html'));
 });
 
 
