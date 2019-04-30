@@ -367,7 +367,7 @@ app.post('/davet', (req, res) => {
 
                                             res.json({
                                                 full: true,
-                                                msg: server + "dave?t=" + existedTuanId,
+                                                msg: "dave?t=" + existedTuanId,
                                                 error: null
                                             });
                                         })
