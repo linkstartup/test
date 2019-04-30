@@ -36,6 +36,10 @@ app.get('/', (req, res) => {
 });
 
 
+app.get('/mn', (req, res) => {
+    res.sendFile(path.join(__dirname, './mn.html'));
+});
+
 //抽奖
 app.post('/davec', (req, res) => {
 
