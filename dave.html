@@ -297,9 +297,10 @@ $(document).ready(function () {
         crossDomain: true,
         dataType: "json",
         success: function success(data, status, jqXHR) {
-            console.log(data)
           if (data.full) {
-            window.location.href = data.msg;
+                        console.log(data)
+
+            // window.location.href = data.msg;
           } else {
             displayMessage(true, data.msg);
             display.empty();
