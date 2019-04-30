@@ -429,7 +429,7 @@ app.post('/davet', (req, res) => {
 
                                             res.json({
                                                 full: true,
-                                                msg: server + "dave?t=" + newTuanId,
+                                                msg: "dave?t=" + newTuanId,
                                                 error: null
                                             });
                                         })
