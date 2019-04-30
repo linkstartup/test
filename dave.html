@@ -281,6 +281,8 @@ $(document).ready(function () {
     return re.test(phone);
   }
 
+
+
   form.submit(function (e) {
     e.preventDefault();
 
@@ -299,7 +301,8 @@ $(document).ready(function () {
         success: function success(data, status, jqXHR) {
             console.log(data)
           if (data.full) {
-                        console.log(data.msg)
+                        alert(data.msg)
+                        alert('jump')
 
             window.location.href = data.msg;
           } else {
