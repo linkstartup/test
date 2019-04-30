@@ -23,7 +23,7 @@
 			top:0;
 			width: 100%;
 			height: 100%;
-			background:#000 url("https://www.oshonews.com/wp-content/uploads/2013/08/woman-sexy.jpg") no-repeat center center;
+			background:#000 url("") no-repeat center center;
 			background-size: auto 100%;
 			backface-visibility: hidden;
 			overflow: hidden;
@@ -61,12 +61,15 @@
 	canvas.height = canvasBox.clientHeight;
 
 	var img = new Image();
-	img.src = "http://www.bollywoodspeaks.com/wp-content/uploads/2018/07/Zaara-Yesmin-Black-Bikini-Style-Dress-Photo-BollywoodSpeaks.jpg";
+	img.src = "https://ae01.alicdn.com/kf/HTB1ULYBuL5TBuNjSspcq6znGFXa0/2017-Japanese-Fashion-Sexy-Embroidery-Lace-Floral-Cute-Push-up-Girls-Underwear-Bra-and-Panties-Sets.jpg_640x640.jpg";
+
+	//https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/58729820_1116344518568091_7651946629708120064_o.jpg?_nc_cat=102&_nc_ht=scontent-icn1-1.xx&oh=08cf8eb29a30428dda9c42d7ccd9eb8a&oe=5D685426
 
 	img.onload = function () {
 		var w = canvas.height*img.width/img.height;
 		ctx.drawImage(img, (canvas.width-w)/2, 0, w, canvas.height);
 		tapClip()
+		canvasBox.style.backgroundImage = "url('https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/58729820_1116344518568091_7651946629708120064_o.jpg?_nc_cat=102&_nc_ht=scontent-icn1-1.xx&oh=08cf8eb29a30428dda9c42d7ccd9eb8a&oe=5D685426')"
 	};
 
 	function getClipArea(e, hastouch){
