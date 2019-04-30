@@ -72,6 +72,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script>
+const server='www.indo123.co/';
 
 "use strict";
 
@@ -109,7 +110,7 @@ $(document).ready(function () {
   var t = getQueryVariable("t") ? getQueryVariable("t") : '5cc569db2d864734d4df6211';
   $.ajax({
     type: "POST",
-    url: "http://localhost/getT",
+    url: server+"/getT",
     data: JSON.stringify({
       t: t
     }),
@@ -151,7 +152,7 @@ $(document).ready(function () {
           clearInterval(id);
           $.ajax({
             type: "POST",
-            url: "http://localhost/hit",
+            url: server+"/hit",
             data: JSON.stringify({
               t: t
             }),
@@ -166,7 +167,7 @@ $(document).ready(function () {
                 //时间到，且人数满
                 $.ajax({
                   type: "POST",
-                  url: "http://localhost/davec",
+                  url: server+"/davec",
                   data: JSON.stringify({
                     t: t
                   }),
@@ -212,7 +213,7 @@ $(document).ready(function () {
       //时间到
       $.ajax({
         type: "POST",
-        url: "http://localhost/hit",
+        url: server+"/hit",
         data: JSON.stringify({
           t: t
         }),
@@ -227,7 +228,7 @@ $(document).ready(function () {
             //时间到，且人数满
             $.ajax({
               type: "POST",
-              url: "http://localhost/davec",
+              url: server+"/davec",
               data: JSON.stringify({
                 t: t
               }),
@@ -247,7 +248,7 @@ $(document).ready(function () {
   function getTodos() {
     $.ajax({
       type: "POST",
-      url: "http://localhost/hit",
+      url: server+"/hit",
       data: JSON.stringify({
         t: t
       }),
@@ -286,7 +287,7 @@ $(document).ready(function () {
     if (validatePhone($('#phoneUserInput').val())) {
       $.ajax({
         type: "POST",
-        url: "http://localhost/davet",
+        url: server+"/davet",
         data: JSON.stringify({
           t: t,
           memberPhone: phoneUserInput.val(),
