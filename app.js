@@ -363,6 +363,7 @@ app.post('/davet', (req, res) => {
                                                 joinedt: existedTuanId
                                             }
                                         }, (err, result) => {
+                                            console.log(server)
 
                                             res.json({
                                                 full: true,
