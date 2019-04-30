@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 
 
 app.get('/mn', (req, res) => {
-    res.sendFile(path.join(__dirname, './mn.html'));
+    res.sendFile(path.join(__dirname, 'mn.html'));
 });
 
 //抽奖
