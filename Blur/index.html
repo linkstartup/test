@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>StackBlur Demo</title>
+        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon" />
+    </head>
+    <body>
+        <h1>StackBlur Demo</h1>
+        <img src="http://localhost:8080/Blur/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-05-02%20%E4%B8%8A%E5%8D%881.07.59.png" alt="">
+        <!-- <img src="original.jpeg" alt="" id='source'> -->
+        <!-- <img src="https://pbs.twimg.com/media/DdAVyyqUwAAGI1U?format=jpg&name=4096x4096" alt="" id='source'> -->
+        <canvas id="canvas"  width="1" height="1"></canvas>
+        <img src="" alt="" id='theimage'>
+<script src="stackblur.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+
+
+(function() {
+
+StackBlur.image('source', 'canvas', '40',false);
+
+document.getElementById("theimage").src = document.getElementById('canvas').toDataURL();
+
+
+uploadBase64(document.getElementById("theimage").src)
+  function uploadBase64(base64) {
+    $.ajax({
+      type: "POST",
+      url: "http://localhost:8675"+"/base64",
+      data: JSON.stringify({
+        base64: base64
+      }),
+      contentType: "application/json; charset=utf-8",
+      crossDomain: true,
+      dataType: "json",
+      success: function success(data, status, jqXHR) {
+        console.log(data)
+      }
+    });
+  }
+
+
+
+})();
+</script>
+    </body>
+</html>

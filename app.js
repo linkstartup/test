@@ -1,8 +1,10 @@
 const server = 'www.indo123.co/';
 // const server = 'http://localhost/';
-
+const fs = require("fs");
 
 const express = require('express');
+const fileUpload = require('express-fileupload');
+
 const bodyParser = require("body-parser");
 const path = require('path');
 var ObjectId = require('mongodb').ObjectID;
@@ -19,12 +21,49 @@ const app = express();
 
 
 // parses json data sent to us by the user 
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    limit: '50mb',
+    extended: true
+}));
+
+app.use(bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true,
+    parameterLimit: 50000
+
+}));
 
 // serve static html file to user
 // app.get('/', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'index.html'));
 // });
+
+
+
+// default options
+app.use(fileUpload());
+
+app.post('/upload', function(req, res) {
+    if (Object.keys(req.files).length == 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+
+    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    let sampleFile = req.files.sampleFile;
+    let name = req.files.sampleFile.name;
+
+    // Use the mv() method to place the file somewhere on your server
+    ///usr/local/var/www/Blur/index.html
+    //./static/images/
+    sampleFile.mv('/usr/local/var/www/Blur/' + name, function(err) {
+        if (err)
+            return res.status(500).send(err);
+
+        res.send('http://localhost:8080/Blur/' + name);
+    });
+});
+
+
 
 //dave团长
 app.get('/dave', (req, res) => {
@@ -43,6 +82,22 @@ app.get('/mn', (req, res) => {
 app.get('/cc', (req, res) => {
     res.sendFile(path.join(__dirname, 'cc.html'));
 });
+
+
+
+//base64
+app.post('/base64', (req, res) => {
+
+    var base64Data = req.body.base64.replace(/^data:image\/png;base64,/, "");
+    fs.writeFile("out.png", base64Data, {
+        encoding: 'base64'
+    }, function(err) {
+        console.log(err);
+    });
+
+
+});
+
 
 //抽奖
 app.post('/davec', (req, res) => {
