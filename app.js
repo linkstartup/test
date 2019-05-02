@@ -103,8 +103,8 @@ app.post('/upload', function(req, res) {
     // Use the mv() method to place the file somewhere on your server
     ///usr/local/var/www/Blur/index.html
     //./static/images/
-    sampleFile.mv('/usr/local/var/www/Blur/' + name, function(err) {
-        res.json({imageUrl:'http://10.80.155.133:8080/Blur/' + name,imgName:name});
+    sampleFile.mv('./clip/Blur/' + name, function(err) {
+        res.json({imageUrl:'https://www.indo123.co/Blur/' + name,imgName:name});
     });
 });
 
@@ -114,7 +114,7 @@ app.post('/upload', function(req, res) {
 app.post('/base64', (req, res) => {
 
     var base64Data = req.body.base64.replace(/^data:image\/png;base64,/, "");
-    fs.writeFile('/usr/local/var/www/Blur/first/'+req.body.imgName, base64Data, {
+    fs.writeFile('./clip/Blur/first/'+req.body.imgName, base64Data, {
         encoding: 'base64'
     }, function(err) {
         console.log(err);
