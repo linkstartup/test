@@ -114,7 +114,7 @@ app.post('/upload', function(req, res) {
     ///usr/local/var/www/Blur/index.html
     //./static/images/
     sampleFile.mv('./clip/Blur/' + name, function(err) {
-        res.json({imageUrl:'https://www.indo123.co/clip/Blur/' + name+'imgSuffix',imgName:name});
+        res.json({imageUrl:'https://www.indo123.co/clip/Blur/' + name+'.'+imgSuffix,imgName:name});
     });
 });
 
