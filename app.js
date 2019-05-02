@@ -103,6 +103,12 @@ app.post('/upload', function(req, res) {
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
     let sampleFile = req.files.sampleFile;
     let name = req.files.sampleFile.name.replace(/\s+/g,"");
+    var imgSuffix=name.split('.')[name.split('.').length-1];
+    
+    name = name.replace(/\-+/g,"");
+    name = name.replace(/\.+/g,"");
+
+    name=name.substring(0, 10);
 
     // Use the mv() method to place the file somewhere on your server
     ///usr/local/var/www/Blur/index.html
