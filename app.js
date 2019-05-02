@@ -113,7 +113,7 @@ app.post('/upload', function(req, res) {
     // Use the mv() method to place the file somewhere on your server
     ///usr/local/var/www/Blur/index.html
     //./static/images/
-    sampleFile.mv('./clip/Blur/' + name, function(err) {
+    sampleFile.mv('./clip/Blur/' + name+'.'+imgSuffix, function(err) {
         res.json({imageUrl:'https://www.indo123.co/clip/Blur/' + name+'.'+imgSuffix,imgName:name});
     });
 });
