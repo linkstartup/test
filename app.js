@@ -76,6 +76,17 @@ app.use('/', routes);
 
 
 
+
+app.post('/getPriority', function(req, res) {
+    res.json({
+        leftRatio:0.7,
+        a:10
+    })
+})
+
+
+
+
 // default options
 app.use(fileUpload());
 
@@ -86,19 +97,33 @@ app.post('/upload', function(req, res) {
 
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
     let sampleFile = req.files.sampleFile;
-    let name = req.files.sampleFile.name;
+    let name = req.files.sampleFile.name.replace(/\s+/g,"");
 
     // Use the mv() method to place the file somewhere on your server
     ///usr/local/var/www/Blur/index.html
     //./static/images/
     sampleFile.mv('/usr/local/var/www/Blur/' + name, function(err) {
-        if (err)
-            return res.status(500).send(err);
-
-        res.send('http://localhost:8080/Blur/' + name);
+        res.json({imageUrl:'http://10.80.155.133:8080/Blur/' + name,imgName:name});
     });
 });
 
+
+
+//base64
+app.post('/base64', (req, res) => {
+
+    var base64Data = req.body.base64.replace(/^data:image\/png;base64,/, "");
+    fs.writeFile('/usr/local/var/www/Blur/first/'+req.body.imgName, base64Data, {
+        encoding: 'base64'
+    }, function(err) {
+        console.log(err);
+        res.json({
+            msg:'success uploaded base64'
+        })
+    });
+
+
+});
 
 
 //dave团长
@@ -120,18 +145,7 @@ app.get('/cc', (req, res) => {
 
 
 
-//base64
-app.post('/base64', (req, res) => {
 
-    var base64Data = req.body.base64.replace(/^data:image\/png;base64,/, "");
-    fs.writeFile("out.png", base64Data, {
-        encoding: 'base64'
-    }, function(err) {
-        console.log(err);
-    });
-
-
-});
 
 
 //抽奖

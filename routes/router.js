@@ -17,7 +17,7 @@ router.post('/', function(req, res, next) {
   if (req.body.email &&
     req.body.username &&
     req.body.password &&
-    req.body.passwordConf) {
+    req.body.passwordConf) {//register
 
     var userData = {
       email: req.body.email,
@@ -30,11 +30,14 @@ router.post('/', function(req, res, next) {
         return next(error);
       } else {
         req.session.userId = user._id;
-        return res.redirect('/profile');
+        // return res.redirect('/profile');
+        res.json({
+          msg:'register success'
+        })
       }
     });
 
-  } else if (req.body.logemail && req.body.logpassword) {
+  } else if (req.body.logemail && req.body.logpassword) {//login
     User.authenticate(req.body.logemail, req.body.logpassword, function(error, user) {
       if (error || !user) {
         var err = new Error('Wrong email or password.');
@@ -42,7 +45,8 @@ router.post('/', function(req, res, next) {
         return next(err);
       } else {
         req.session.userId = user._id;
-        return res.redirect('/profile');
+        res.json({userId:req.session.userId})
+        // return res.redirect('/profile');
       }
     });
   } else {
@@ -51,33 +55,63 @@ router.post('/', function(req, res, next) {
     return next(err);
   }
 })
+
+
 // GET route after registering
-router.get('/profile', function(req, res, next) {
+router.post('/successLog', function(req, res, next) {
   User.findById(req.session.userId)
     .exec(function(error, user) {
       if (error) {
         return next(error);
       } else {
         if (user === null) {
-          var err = new Error('Not authorized! Go back!');
-          err.status = 400;
-          return next(err);
+          res.json({
+            msg:'please log in'
+          })
         } else {
-          return res.send('<h1>Name: </h1>' + user.username + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>')
+          res.json({
+            leftRatio:0.7,
+            a:50,
+            user:user
+          })
         }
       }
     });
 });
 
+
+
+
+// GET route after registering
+// router.get('/profile', function(req, res, next) {
+//   User.findById(req.session.userId)
+//     .exec(function(error, user) {
+//       if (error) {
+//         return next(error);
+//       } else {
+//         if (user === null) {
+//           var err = new Error('Not authorized! Go back!');
+//           err.status = 400;
+//           return next(err);
+//         } else {
+//           return res.send('<h1>Name: </h1>' + user.username + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>')
+//         }
+//       }
+//     });
+// });
+
 // GET for logout logout
-router.get('/logout', function(req, res, next) {
+router.post('/logout', function(req, res, next) {
   if (req.session) {
     // delete session object
     req.session.destroy(function(err) {
       if (err) {
         return next(err);
       } else {
-        return res.redirect('/');
+        // return res.redirect('/');
+        res.json({
+          msg:'log out'
+        })
       }
     });
   }
