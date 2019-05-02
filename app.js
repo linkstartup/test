@@ -110,11 +110,13 @@ app.post('/upload', function(req, res) {
 
     name=name.substring(0, 10);
 
+    name=name+'.'+imgSuffix
+
     // Use the mv() method to place the file somewhere on your server
     ///usr/local/var/www/Blur/index.html
     //./static/images/
-    sampleFile.mv('./clip/Blur/' + name+'.'+imgSuffix, function(err) {
-        res.json({imageUrl:'https://www.indo123.co/clip/Blur/' + name+'.'+imgSuffix,imgName:name});
+    sampleFile.mv('./clip/Blur/' + name, function(err) {
+        res.json({imageUrl:'https://www.indo123.co/clip/Blur/' + name,imgName:name});
     });
 });
 
