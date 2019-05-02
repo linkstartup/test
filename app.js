@@ -1,11 +1,17 @@
+var express = require('express');
+// var router = express.Router();
+
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+
 const server = 'www.indo123.co/';
 // const server = 'http://localhost/';
 const fs = require("fs");
 
-const express = require('express');
 const fileUpload = require('express-fileupload');
 
-const bodyParser = require("body-parser");
 const path = require('path');
 var ObjectId = require('mongodb').ObjectID;
 
@@ -32,6 +38,36 @@ app.use(bodyParser.urlencoded({
     parameterLimit: 50000
 
 }));
+
+
+
+//connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/crud_mongodb');
+var db2 = mongoose.connection;
+
+//handle mongo error
+db2.on('error', console.error.bind(console, 'connection error:'));
+db2.once('open', function() {
+    // we're connected!
+});
+
+//use sessions for tracking logins
+app.use(session({
+    secret: 'work hard',
+    resave: true,
+    saveUninitialized: false,
+    store: new MongoStore({
+        mongooseConnection: db2
+    })
+}));
+
+// serve static files from template
+app.use(express.static(__dirname + '/templateLogReg'));
+// include routes
+var routes = require('./routes/router');
+app.use('/', routes);
+
+
 
 // serve static html file to user
 // app.get('/', (req, res) => {
@@ -70,10 +106,9 @@ app.get('/dave', (req, res) => {
     res.sendFile(path.join(__dirname, './dist/dave.html'));
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, './dist/dave.html'));
-});
-
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, './dist/dave.html'));
+// });
 
 app.get('/mn', (req, res) => {
     res.sendFile(path.join(__dirname, 'mn.html'));
