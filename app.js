@@ -42,7 +42,8 @@ app.use(bodyParser.urlencoded({
 
 
 //connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/crud_mongodb');
+// mongoose.connect('mongodb://localhost:27017/crud_mongodb');
+mongoose.connect("mongodb://root:261500Aa@localhost:27017/crud_mongodb?authSource=admin")
 var db2 = mongoose.connection;
 
 //handle mongo error

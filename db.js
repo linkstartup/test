@@ -3,8 +3,8 @@ const ObjectID = require('mongodb').ObjectID;
 // name of our database
 const dbname = "crud_mongodb";
 // location of where our mongoDB database is located
-const url = "mongodb://localhost:27017";
-// const url = "mongodb://root:261500Aa@localhost:27017/crud_mongodb?authSource=admin"
+// const url = "mongodb://localhost:27017";
+const url = "mongodb://root:261500Aa@localhost:27017/crud_mongodb?authSource=admin"
 // Options for mongoDB
 const mongoOptions = {
     useNewUrlParser: true
