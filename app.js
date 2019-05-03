@@ -72,8 +72,7 @@ app.use(session({
 app.use(express.static(__dirname + '/templateLogReg'));
 // include routes
 // var routes = require('./routes/router');
-// app.use('/', routes);
-
+app.use('/', router);
 
 //POST route for updating data
 router.post('/', function(req, res, next) {
@@ -187,6 +186,8 @@ router.post('/', function(req, res, next) {
       });
     }
   });
+
+
 
 
 
