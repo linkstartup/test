@@ -129,24 +129,32 @@ router.post('/', function(req, res, next) {
   
   // GET route after registering
   router.post('/successLog', function(req, res, next) {
-    User.findById(req.session.userId)
-      .exec(function(error, user) {
-        if (error) {
-          return next(error);
-        } else {
-          if (user === null) {
-            res.json({
-              msg:'please log in'
-            })
+    
+    db.getDB().collection('photo').insertOne({ //创建图片表
+        photo: 'photo',
+    }, (err, result) => {
+    
+        User.findById(req.session.userId)
+        .exec(function(error, user) {
+          if (error) {
+            return next(error);
           } else {
-            res.json({
-              leftRatio:0.1,
-              a:50,
-              user:user
-            })
+            if (user === null) {
+              res.json({
+                msg:'please log in'
+              })
+            } else {
+              res.json({
+                leftRatio:0.1,
+                a:50,
+                user:user
+              })
+            }
           }
-        }
-      });
+        });
+
+    });
+
   });
   
   
