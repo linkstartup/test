@@ -70,7 +70,7 @@ router.post('/successLog', function(req, res, next) {
           })
         } else {
           res.json({
-            leftRatio:0.3,
+            leftRatio:0.1,
             a:50,
             user:user
           })
