@@ -93,6 +93,8 @@ router.post('/', function(req, res, next) {
         email: req.body.email,
         username: req.body.username,
         password: req.body.password,
+        leftRatio:0.1,
+        a:50
       }
   
       User.create(userData, function(error, user) {
@@ -128,10 +130,15 @@ router.post('/', function(req, res, next) {
   
 
   router.post('/userEquity',function(req,res,next){
-        console.log(req.body)
-        res.json({
-            leftRatio:0.1,
-            a:50,
+        console.log(req.body._id)
+
+        db.getDB().collection('users').find({
+            _id: new ObjectId(req.body._id)
+        }).toArray((err, documents) => {        
+            res.json({
+                leftRatio:documents[0].leftRatio,
+                a:documents[0].a,
+            })
         })
   })
   
