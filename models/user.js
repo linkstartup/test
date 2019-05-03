@@ -17,6 +17,14 @@ var UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  leftRatio:{
+    type:Number,
+    required:true,
+  },
+  a:{
+    type:Number,
+    required:true
   }
 });
 
