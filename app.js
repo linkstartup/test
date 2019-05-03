@@ -133,7 +133,7 @@ router.post('/', function(req, res, next) {
     app.post('/userEquity', function(req, res) {
 
         db.getDB().collection('users').find({
-            _id: new ObjectId(req.body._id)
+            _id: new ObjectId(req.body.user._id)
         }).toArray((err, documents) => {        
             res.json({
                 leftRatio:documents[0].leftRatio,
