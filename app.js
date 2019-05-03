@@ -126,6 +126,14 @@ router.post('/', function(req, res, next) {
     }
   })
   
+
+  router.post('/userEquity',function(req,res,next){
+        console.log(req.body)
+        res.json({
+            leftRatio:0.1,
+            a:50,
+        })
+  })
   
   // GET route after registering
   router.post('/successLog', function(req, res, next) {
@@ -145,8 +153,6 @@ router.post('/', function(req, res, next) {
               })
             } else {
               res.json({
-                leftRatio:0.1,
-                a:50,
                 user:user
               })
             }
