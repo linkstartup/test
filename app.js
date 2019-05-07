@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('./models/user');
-
+import moment from 'moment';
 
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
@@ -778,7 +778,7 @@ app.post('/setd', (req, res) => { //设置每个团开奖时间，团的图片�
 //whatstime
 app.post('/whatstime',(req,res)=>{
     res.json({
-        whatstime:new Date()
+        whatstime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
     })
 })
 
