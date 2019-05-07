@@ -34,6 +34,12 @@
             <div class="col-lg-2"></div>
             <div class="col-lg-8">                                
                 <ul class="list-group" id="display">
+                        <li class="list-group-item" id="">
+                                <div class="row">
+                                    <div class="col-sm-6" style="width:50%" id="">telepon</div>
+                                    <div class="col-sm-6" style="width:50%">nama</div>
+                                </div>
+                           </li>
                 </ul>
             </div>
             <div class="col-lg-2"></div>
@@ -56,11 +62,11 @@
                 <form id="form">
                     <div class="form-group" id="userInfo" style="color:red;">
                         <label for="phone">telepon</label>
-                        <input class="form-control" id="phoneUserInput" type="tel" name="phone"  placeholder="81386139021" />
+                        <input class="form-control" id="phoneUserInput" type="tel" name="phone"  placeholder="" />
 
 
                         <label for="phone" style="margin-top:15px;">nama </label>
-                        <input class="form-control" id="nameUserInput" type="text" name="name"  placeholder="nama" />
+                        <input class="form-control" id="nameUserInput" type="text" name="name"  placeholder="" />
 
 
                        
@@ -362,25 +368,25 @@ $(document).ready(function () {
       });
     }
   }); 
-  const displayTodos = (data)=>{
-      data.m.forEach((todo)=>{
-          display.append(
-              `<li class="list-group-item" id="">
-                  <div class="row">
-                      <div class="col-sm-6" style="width:50%" id="">${todo.memberPhone}</div>
-                      <div class="col-sm-6" style="width:50%">${todo.memberName}</div>
-                  </div>
-             </li>`);
-      });
-  }
+//   const displayTodos = (data)=>{
+//       data.m.forEach((todo)=>{
+//           display.append(
+//               `<li class="list-group-item" id="">
+//                   <div class="row">
+//                       <div class="col-sm-6" style="width:50%" id="">${todo.memberPhone}</div>
+//                       <div class="col-sm-6" style="width:50%">${todo.memberName}</div>
+//                   </div>
+//              </li>`);
+//       });
+//   }
 
 
 
-//   var displayTodos = function displayTodos(data) {
-//     data.m.forEach(function (todo) {
-//       display.append("<li class=\"list-group-item\" id=\"\">\n                            <div class=\"row\">\n                                <div class=\"col-md-4\" id=\"\">".concat(todo.memberPhone, "</div>\n                                <div class=\"col-md-4\">").concat(todo.memberName, "</div>\n                            </div>\n                       </li>"));
-//     });
-//   };
+var displayTodos = function displayTodos(data) {
+  data.m.forEach(function (todo) {
+    display.append("<li class=\"list-group-item\" id=\"\">\n                  <div class=\"row\">\n                      <div class=\"col-sm-6\" style=\"width:50%\" id=\"\">".concat(todo.memberPhone, "</div>\n                      <div class=\"col-sm-6\" style=\"width:50%\">").concat(todo.memberName, "</div>\n                  </div>\n             </li>"));
+  });
+};
 
 
 message.hide();
