@@ -252,7 +252,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function success(data, status, jqXHR) {
               if (data.m.length < 10) {
-                //时间到，人未满
+                //时间到，人未满，刷新
                 $("#timer").html('tamat'); 
                 $("#userInfo").hide();
                 captain.empty();
@@ -261,7 +261,7 @@ $(document).ready(function () {
                 $('#imgContainer').empty();
                 getTodos();
               } else {
-                //时间到，且人数满
+                //时间到，且人数满,抽奖，刷新
                 $.ajax({
                   type: "POST",
                   url: server+"/davec",
