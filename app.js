@@ -9,7 +9,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 
 // const server = 'www.indo123.co/';
-const server = 'http://localhost/';
+// const server = 'http://localhost/';
 const fs = require("fs");
 
 const fileUpload = require('express-fileupload');
@@ -48,142 +48,142 @@ app.use(bodyParser.urlencoded({
 
 
 //connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/crud_mongodb');
+// mongoose.connect('mongodb://localhost:27017/crud_mongodb');
 // mongoose.connect("mongodb://root:261500Aa@localhost:27017/crud_mongodb?authSource=admin")
-var db2 = mongoose.connection;
+// var db2 = mongoose.connection;
 
-//handle mongo error
-db2.on('error', console.error.bind(console, 'connection error:'));
-db2.once('open', function() {
-    // we're connected!
-});
+// //handle mongo error
+// db2.on('error', console.error.bind(console, 'connection error:'));
+// db2.once('open', function() {
+//     // we're connected!
+// });
 
 //use sessions for tracking logins
-app.use(session({
-    secret: 'work hard',
-    resave: true,
-    saveUninitialized: false,
-    store: new MongoStore({
-        mongooseConnection: db2
-    })
-}));
+// app.use(session({
+//     secret: 'work hard',
+//     resave: true,
+//     saveUninitialized: false,
+//     store: new MongoStore({
+//         mongooseConnection: db2
+//     })
+// }));
 
 // serve static files from template
 // app.use(express.static(__dirname + '/templateLogReg'));
 // include routes
 // var routes = require('./routes/router');
-app.use('/', router);
+// app.use('/', router);
 
-//POST route for updating data
-router.post('/', function(req, res, next) {
-    // confirm that user typed same password twice
-    if (req.body.password !== req.body.passwordConf) {
-      var err = new Error('Passwords do not match.');
-      err.status = 400;
-      res.send("passwords dont match");
-      return next(err);
-    }
+// //POST route for updating data
+// router.post('/', function(req, res, next) {
+//     // confirm that user typed same password twice
+//     if (req.body.password !== req.body.passwordConf) {
+//       var err = new Error('Passwords do not match.');
+//       err.status = 400;
+//       res.send("passwords dont match");
+//       return next(err);
+//     }
   
-    if (req.body.email &&
-      req.body.username &&
-      req.body.password &&
-      req.body.passwordConf) {//register
+//     if (req.body.email &&
+//       req.body.username &&
+//       req.body.password &&
+//       req.body.passwordConf) {//register
   
-      var userData = {
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-        leftRatio:0.1,
-        a:50
-      }
+//       var userData = {
+//         email: req.body.email,
+//         username: req.body.username,
+//         password: req.body.password,
+//         leftRatio:0.1,
+//         a:50
+//       }
   
-      User.create(userData, function(error, user) {
-        if (error) {
-          return next(error);
-        } else {
-          req.session.userId = user._id;
-          // return res.redirect('/profile');
-          res.json({
-            msg:'register success'
-          })
-        }
-      });
+//       User.create(userData, function(error, user) {
+//         if (error) {
+//           return next(error);
+//         } else {
+//           req.session.userId = user._id;
+//           // return res.redirect('/profile');
+//           res.json({
+//             msg:'register success'
+//           })
+//         }
+//       });
   
-    } else if (req.body.logemail && req.body.logpassword) {//login
-      User.authenticate(req.body.logemail, req.body.logpassword, function(error, user) {
-        if (error || !user) {
-          var err = new Error('Wrong email or password.');
-          err.status = 401;
-          return next(err);
-        } else {
-          req.session.userId = user._id;
-          res.json({userId:req.session.userId})
-          // return res.redirect('/profile');
-        }
-      });
-    } else {
-      var err = new Error('All fields required.');
-      err.status = 400;
-      return next(err);
-    }
-  })
+//     } else if (req.body.logemail && req.body.logpassword) {//login
+//       User.authenticate(req.body.logemail, req.body.logpassword, function(error, user) {
+//         if (error || !user) {
+//           var err = new Error('Wrong email or password.');
+//           err.status = 401;
+//           return next(err);
+//         } else {
+//           req.session.userId = user._id;
+//           res.json({userId:req.session.userId})
+//           // return res.redirect('/profile');
+//         }
+//       });
+//     } else {
+//       var err = new Error('All fields required.');
+//       err.status = 400;
+//       return next(err);
+//     }
+//   })
   
 
 
-app.post('/userEquity', function(req, res) {
+// app.post('/userEquity', function(req, res) {
 
-    db.getDB().collection('users').find({
-        _id: new ObjectId(req.body.user._id)
-    }).toArray((err, documents) => {        
-        res.json({
-            leftRatio:documents[0].leftRatio,
-            a:documents[0].a,
-        })
-    })
-})
+//     db.getDB().collection('users').find({
+//         _id: new ObjectId(req.body.user._id)
+//     }).toArray((err, documents) => {        
+//         res.json({
+//             leftRatio:documents[0].leftRatio,
+//             a:documents[0].a,
+//         })
+//     })
+// })
 
-  // GET route after registering
-  router.post('/successLog', function(req, res, next) {
+//   // GET route after registering
+//   router.post('/successLog', function(req, res, next) {
         
-        User.findById(req.session.userId)
-        .exec(function(error, user) {
-          if (error) {
-            return next(error);
-          } else {
-            if (user === null) {
-              res.json({
-                msg:'please log in'
-              })
-            } else {
-              res.json({
-                user:user
-              })
-            }
-          }
-        });
+//         User.findById(req.session.userId)
+//         .exec(function(error, user) {
+//           if (error) {
+//             return next(error);
+//           } else {
+//             if (user === null) {
+//               res.json({
+//                 msg:'please log in'
+//               })
+//             } else {
+//               res.json({
+//                 user:user
+//               })
+//             }
+//           }
+//         });
 
 
-  });
+//   });
   
   
 
   
-  // GET for logout logout
-  router.post('/logout', function(req, res, next) {
-    if (req.session) {
-      // delete session object
-      req.session.destroy(function(err) {
-        if (err) {
-          return next(err);
-        } else {
-          // return res.redirect('/');
-          res.json({
-            msg:'log out'
-          })
-        }
-      });
-    }
-  });
+//   // GET for logout logout
+//   router.post('/logout', function(req, res, next) {
+//     if (req.session) {
+//       // delete session object
+//       req.session.destroy(function(err) {
+//         if (err) {
+//           return next(err);
+//         } else {
+//           // return res.redirect('/');
+//           res.json({
+//             msg:'log out'
+//           })
+//         }
+//       });
+//     }
+//   });
 
 
 
@@ -199,85 +199,85 @@ app.post('/userEquity', function(req, res) {
 
 
 
-// serve static html file to user
-// app.get('/', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'index.html'));
+// // serve static html file to user
+// // app.get('/', (req, res) => {
+// //     res.sendFile(path.join(__dirname, 'index.html'));
+// // });
+
+
+
+
+// app.post('/getPriority', function(req, res) {
+//     res.json({
+//         leftRatio:0.7,
+//         a:10
+//     })
+// })
+
+
+
+
+// // default options
+// app.use(fileUpload());
+
+// app.post('/upload', function(req, res) {
+//     if (Object.keys(req.files).length == 0) {
+//         return res.status(400).send('No files were uploaded.');
+//     }
+
+//     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+//     let sampleFile = req.files.sampleFile;
+//     let name = req.files.sampleFile.name.replace(/\s+/g,"");
+//     var imgSuffix=name.split('.')[name.split('.').length-1];
+    
+//     name = name.replace(/\-+/g,"");
+//     name = name.replace(/\.+/g,"");
+
+//     name=name.substring(0, 10);
+
+//     name=name+'.'+imgSuffix
+
+//     // Use the mv() method to place the file somewhere on your server
+//     // sampleFile.mv('./clip/Blur/' + name, function(err) {
+//     //     res.json({imageUrl:'https://www.indo123.co/clip/Blur/' + name,imgName:name});
+//     // });
+
+//     sampleFile.mv('/usr/local/var/www/Blur/' + name, function(err) {
+//         db.getDB().collection('photo').insertOne({name:name,createAt:new Date(),uploadBy:'root'}, (err, result) => { //加入成员表
+
+//             res.json({imageUrl:'http://localhost/Blur/' + name,imgName:name});
+
+
+//         });
+//     });    
 // });
 
 
 
+// //base64
+// app.post('/base64', (req, res) => {
 
-app.post('/getPriority', function(req, res) {
-    res.json({
-        leftRatio:0.7,
-        a:10
-    })
-})
+//     var base64Data = req.body.base64.replace(/^data:image\/png;base64,/, "");
 
+//     // fs.writeFile('./clip/Blur/first/'+req.body.imgName, base64Data, {
+//     //     encoding: 'base64'
+//     // }, function(err) {
+//     //     console.log(err);
+//     //     res.json({
+//     //         msg:'success uploaded base64'
+//     //     })
+//     // });
 
+//     fs.writeFile('/usr/local/var/www/Blur/first/'+req.body.imgName, base64Data, {
+//         encoding: 'base64'
+//     }, function(err) {
+//         console.log(err);
+//         res.json({
+//             msg:'success uploaded base64'
+//         })
+//     });
 
-
-// default options
-app.use(fileUpload());
-
-app.post('/upload', function(req, res) {
-    if (Object.keys(req.files).length == 0) {
-        return res.status(400).send('No files were uploaded.');
-    }
-
-    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    let sampleFile = req.files.sampleFile;
-    let name = req.files.sampleFile.name.replace(/\s+/g,"");
-    var imgSuffix=name.split('.')[name.split('.').length-1];
-    
-    name = name.replace(/\-+/g,"");
-    name = name.replace(/\.+/g,"");
-
-    name=name.substring(0, 10);
-
-    name=name+'.'+imgSuffix
-
-    // Use the mv() method to place the file somewhere on your server
-    // sampleFile.mv('./clip/Blur/' + name, function(err) {
-    //     res.json({imageUrl:'https://www.indo123.co/clip/Blur/' + name,imgName:name});
-    // });
-
-    sampleFile.mv('/usr/local/var/www/Blur/' + name, function(err) {
-        db.getDB().collection('photo').insertOne({name:name,createAt:new Date(),uploadBy:'root'}, (err, result) => { //加入成员表
-
-            res.json({imageUrl:'http://localhost/Blur/' + name,imgName:name});
-
-
-        });
-    });    
-});
-
-
-
-//base64
-app.post('/base64', (req, res) => {
-
-    var base64Data = req.body.base64.replace(/^data:image\/png;base64,/, "");
-
-    // fs.writeFile('./clip/Blur/first/'+req.body.imgName, base64Data, {
-    //     encoding: 'base64'
-    // }, function(err) {
-    //     console.log(err);
-    //     res.json({
-    //         msg:'success uploaded base64'
-    //     })
-    // });
-
-    fs.writeFile('/usr/local/var/www/Blur/first/'+req.body.imgName, base64Data, {
-        encoding: 'base64'
-    }, function(err) {
-        console.log(err);
-        res.json({
-            msg:'success uploaded base64'
-        })
-    });
-
-});
+// });
 
 
 
@@ -1408,7 +1408,7 @@ app.post('/tzq', (req, res) => {
 
         res.json({
             documents: documents,
-            server: server
+            // server: server
         });
 
 
