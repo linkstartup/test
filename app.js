@@ -289,6 +289,167 @@ app.get('/', (req, res) => {
 })
 
 
+
+
+//参加团
+app.post('/seed', (req, res) => {
+
+    db.getDB().collection(collection3).find({
+        _id: new ObjectId(req.body.t)
+    }).toArray((err, documents) => {
+
+        let tuanzhangId = documents[0].t;
+
+
+
+        db.getDB().collection(collection5).find({
+            memberPhone: req.body.memberPhone
+        }).toArray((err, documents) => {
+            if (documents.length == 0) { //是新成员
+
+                console.log('new')
+                //判断当前的团是否满了
+                db.getDB().collection(collection3).find({
+                    _id: new ObjectId(req.body.t)
+                }).toArray((err, documents) => {
+
+                    if (documents[0].m.length < 10) { //没有满
+                        console.log('not full join')
+                        req.body.tuanId = req.body.t;
+                        req.body.joinedt = [req.body.t];
+                        req.body.time = 1; //第一次参加
+                        req.body.tuanzhangId = tuanzhangId;
+
+                        db.getDB().collection(collection3).updateOne({ //进入抽奖表
+                            _id: new ObjectId(req.body.t)
+                        }, {
+                            $push: {
+                                m: req.body
+                            }
+                        }, {
+                            returnOriginal: false
+                        }, (err, result) => {
+                            db.getDB().collection(collection5).insertOne(req.body, (err, result) => { //加入成员表
+
+                                res.json({
+                                    msg: "success!",
+                                    error: null
+                                });
+
+                            });
+
+                        });
+
+
+
+                    } else { //当前的团已经满了
+                        console.log('full')
+                        res.json({
+                            msg: "full!",
+                            error: null
+                        });
+
+
+
+
+                    }
+                });
+            } else { //是老成员，已经参加过
+                console.log('old')
+                const joinedts = documents[0].joinedt;
+
+                let existSameT = joinedts.filter((joinedt) => {
+                    return joinedt == req.body.t
+                });//参加过这个团
+
+
+                //查询参加次数
+                let joinTime = documents[0].time
+                //判断当前的团是否满了
+                db.getDB().collection(collection3).find({
+                    _id: new ObjectId(req.body.t)
+                }).toArray((err, documents) => {
+
+
+                    if (documents[0].m.length < 10) { //当前的团没有满
+
+
+                        if (existSameT.length > 0) { //加入过同一个团
+                            res.json({
+                                msg: 'existed'
+                            })
+                        } else {//没有加入过这个团
+
+                            console.log('not full join')
+                            req.body.tuanId = req.body.t;
+                            req.body.time = ++joinTime; //参加次数更新
+                            req.body.tuanzhangId = tuanzhangId;
+
+
+
+                            db.getDB().collection(collection3).updateOne({ //进入抽奖表
+                                _id: new ObjectId(req.body.t)
+                            }, {
+                                $push: {
+                                    m: req.body
+                                }
+                            }, {
+                                returnOriginal: false
+                            }, (err, result) => { //更新成员表
+
+
+
+                                db.getDB().collection(collection5).updateOne({
+                                    memberPhone: req.body.memberPhone
+                                }, {
+                                    $set: {
+                                        time: req.body.time
+                                    },
+                                    $push: {
+                                        joinedt: req.body.t
+                                    }
+                                }, (err, result) => {
+                                    console.log(req.body.time)
+                                    res.json({
+                                        msg: "success!",
+                                        error: null
+                                    });
+                                })
+
+
+
+                            });
+
+
+
+                        }
+
+                    } else { //当前的团已经满了
+                        console.log('full')
+
+                        res.json({
+                            msg: "full!",
+                            error: null
+                        });
+
+                    }
+                });
+
+
+
+            }
+
+
+        });
+    })
+
+
+
+});
+
+
+
+
 //dave团长
 app.get('/dave', (req, res) => {
     res.sendFile(path.join(__dirname, './dist/dave.html'));

@@ -357,7 +357,7 @@ $(document).ready(function () {
     if (validatePhone($('#phoneUserInput').val())&& ($('#nameUserInput').val())  ) {
       $.ajax({
         type: "POST",
-        url: server+"/davet",
+        url: server+"/seed",
         data: JSON.stringify({
           t: t,
           memberPhone: phoneUserInput.val(),
