@@ -169,7 +169,7 @@ $(document).ready(function () {
               crossDomain: true,
               dataType: "json",
               success: function success(data, status, jqXHR) {
-                $("#timer").html(data.memberPhone);
+                $("#timer").html("winner : "+data.memberPhone);
                 $("#userInfo").hide()
               }
             });
@@ -229,6 +229,7 @@ $(document).ready(function () {
                 //时间到，人未满
                 $("#timer").html('Game Over'); 
                 $("#userInfo").hide()
+                captain.hide()
               } else {
                 //时间到，且人数满
                 $.ajax({
@@ -241,7 +242,8 @@ $(document).ready(function () {
                   crossDomain: true,
                   dataType: "json",
                   success: function success(data, status, jqXHR) {
-                    $("#timer").html(data.memberPhone);
+                    $("#timer").html("winner : "+data.memberPhone);
+                    captian.hide();
                     $("#userInfo").hide()
                   }
                 });
@@ -292,7 +294,9 @@ $(document).ready(function () {
 
 
         if (data.m.length < 10) {
-            captain.append("<div> ".concat(data.t, " need ").concat(10 - data.m.length, " </div>"))
+            captain.append("<div>  ".concat(10 - data.m.length, " </div>"))
+
+            // captain.append("<div> ".concat(data.t, " need ").concat(10 - data.m.length, " </div>"))
         //   captain.append(`<div>captain ${data.t} need ${10 - data.m.length} more</div>`)
         //   captain.append("<div>captain ".concat(data.t, " </div>"));
         //   captain.append("<div>need ".concat(10 - data.m.length, " more</div>"));
@@ -302,8 +306,9 @@ $(document).ready(function () {
             timer.html("winner : "+data.haveWinner.memberPhone);
           }
 
-          captain.append("<div> ".concat(data.t, "  full</div>"));
+        //   captain.append("<div> ".concat(data.t, "  full</div>"));
         //   captain.append("<div>full</div>"); 
+          captain.hide();
           $("#userInfo").hide()
 
           displayTodos(data);
