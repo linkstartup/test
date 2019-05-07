@@ -147,6 +147,11 @@ $(document).ready(function () {
         second: second
       });
       $("#timer").html(diff.format("HH:mm:ss"));
+      captain.empty();
+      display.empty();
+      jointuan.empty();
+      $('#imgContainer').empty();
+      getTodos();
     } else {
       //时间到
       $.ajax({
@@ -163,11 +168,11 @@ $(document).ready(function () {
             //时间到，人未满
             $("#timer").html('tamat'); 
             $("#userInfo").hide();
-            // captain.empty();
-            // display.empty();
-            // jointuan.empty();
-            // $('#imgContainer').empty();
-            // getTodos();
+            captain.empty();
+            display.empty();
+            jointuan.empty();
+            $('#imgContainer').empty();
+            getTodos();
           } else {
             //时间到，且人数满
             $.ajax({
@@ -182,11 +187,11 @@ $(document).ready(function () {
               success: function success(data, status, jqXHR) {
                 $("#timer").html("winner : "+data.memberPhone);
                 $("#userInfo").hide();
-                // captain.empty();
-                // display.empty();
-                // jointuan.empty();
-                // $('#imgContainer').empty();
-                // getTodos();
+                captain.empty();
+                display.empty();
+                jointuan.empty();
+                $('#imgContainer').empty();
+                getTodos();
               }
             });
           }
@@ -206,9 +211,14 @@ $(document).ready(function () {
     crossDomain: true,
     dataType: "json",
     success: function success(data, status, jqXHR) {
+      captain.empty();
+      display.empty();
+      jointuan.empty();
+      $('#imgContainer').empty();
+      getTodos();
 
       var diffSecond = data.diffSecond;
-      startCount(diffSecond);
+    //   startCount(diffSecond);
       var id = setInterval(function () {
         diffSecond--;
         console.log(diffSecond);
@@ -317,7 +327,7 @@ $(document).ready(function () {
 
 
 
-        if (data.m.length < 10) {
+        if (data.m.length < 10) {//人未满
             captain.append("<div>  ".concat(data.m.length, "/10 </div>"))
             displayTodos(data);
         } else {//人数满
@@ -334,7 +344,7 @@ $(document).ready(function () {
   }
 
 
-  getTodos();
+//   getTodos();
 
 
   function validatePhone(phone) {
