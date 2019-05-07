@@ -124,7 +124,7 @@
             }).then((response)=>{
                 return response.json();
             }).then((data)=>{
-                var now=moment(data.whatstime).format('YYYY-MM-DD HH:mm:ss');
+                var now=moment(new Date(data.whatstime)).format('YYYY-MM-DD HH:mm:ss');
 
                 $('#endDate').val(now)
             }); 
