@@ -170,6 +170,7 @@ $(document).ready(function () {
               dataType: "json",
               success: function success(data, status, jqXHR) {
                 $("#timer").html(data.memberPhone);
+                $("#userInfo").hide()
               }
             });
           }
@@ -241,6 +242,7 @@ $(document).ready(function () {
                   dataType: "json",
                   success: function success(data, status, jqXHR) {
                     $("#timer").html(data.memberPhone);
+                    $("#userInfo").hide()
                   }
                 });
               }
@@ -276,7 +278,7 @@ $(document).ready(function () {
 
     //   $("#imgContainer").append(`<img style="width:100%;" src="https://cbu01.alicdn.com/img/ibank/2018/670/505/9563505076_305240016.jpg" >`)
 
-    $("#imgContainer").append("<img style=\"width:100%;\" src=\"https://cbu01.alicdn.com/img/ibank/2018/670/505/9563505076_305240016.jpg\" >");
+        $("#imgContainer").append("<img style=\"width:100%;\" src=\"https://cbu01.alicdn.com/img/ibank/2018/670/505/9563505076_305240016.jpg\" >");
     
     
     //   for (var _i = 0; _i < data.videoUrl.length; _i++) {
@@ -295,7 +297,7 @@ $(document).ready(function () {
         //   captain.append("<div>captain ".concat(data.t, " </div>"));
         //   captain.append("<div>need ".concat(10 - data.m.length, " more</div>"));
           displayTodos(data);
-        } else {
+        } else {//人数满
           if (data.haveWinner) {
             timer.html(data.haveWinner.memberPhone);
           }

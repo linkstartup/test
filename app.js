@@ -524,7 +524,7 @@ app.post('/davet', (req, res) => {
                             res.json({
                                 msg: 'existed'
                             })
-                        } else {
+                        } else {//没有加入过这个团
 
                             console.log('not full join')
                             req.body.tuanId = req.body.t;
