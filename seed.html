@@ -149,7 +149,6 @@ $(document).ready(function () {
       $("#timer").html(diff.format("HH:mm:ss"));
       captain.empty();
       display.empty();
-      jointuan.empty();
       $('#imgContainer').empty();
       getTodos();
     } else {
@@ -170,7 +169,6 @@ $(document).ready(function () {
             $("#userInfo").hide();
             captain.empty();
             display.empty();
-            jointuan.empty();
             $('#imgContainer').empty();
             getTodos();
           } else {
@@ -189,7 +187,6 @@ $(document).ready(function () {
                 $("#userInfo").hide();
                 captain.empty();
                 display.empty();
-                jointuan.empty();
                 $('#imgContainer').empty();
                 getTodos();
               }
@@ -213,7 +210,6 @@ $(document).ready(function () {
     success: function success(data, status, jqXHR) {
       captain.empty();
       display.empty();
-      jointuan.empty();
       $('#imgContainer').empty();
       getTodos();
 
@@ -257,7 +253,6 @@ $(document).ready(function () {
                 $("#userInfo").hide();
                 captain.empty();
                 display.empty();
-                jointuan.empty();
                 $('#imgContainer').empty();
                 getTodos();
               } else {
@@ -276,7 +271,6 @@ $(document).ready(function () {
                     $("#userInfo").hide()
                     captain.empty();
                     display.empty();
-                    jointuan.empty();
                     $('#imgContainer').empty();
                     getTodos();                    
                   }
@@ -380,7 +374,6 @@ $(document).ready(function () {
             displayMessage(true, data.msg);
             captain.empty();
             display.empty();
-            jointuan.empty();
             $('#imgContainer').empty();
             getTodos();
           }
