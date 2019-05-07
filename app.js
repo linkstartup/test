@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('./models/user');
-import moment from 'moment';
+var moment=requrie('moment');
 
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
