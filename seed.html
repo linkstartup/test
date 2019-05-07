@@ -36,8 +36,8 @@
                 <ul class="list-group" id="display">
                         <li class="list-group-item" id="">
                                 <div class="row">
-                                    <div class="col-sm-6" style="width:50%" id="">telepon</div>
-                                    <div class="col-sm-6" style="width:50%">nama</div>
+                                    <div class="col-sm-6" style="width:50%" style="border-right: 2px solid #000;text-align: center;">telepon</div>
+                                    <div class="col-sm-6" style="width:50%" style="text-align: center;">nama</div>
                                 </div>
                            </li>
                 </ul>
@@ -384,7 +384,7 @@ $(document).ready(function () {
 
 var displayTodos = function displayTodos(data) {
   data.m.forEach(function (todo) {
-    display.append("<li class=\"list-group-item\" id=\"\">\n                  <div class=\"row\">\n                      <div class=\"col-sm-6\" style=\"width:50%\" id=\"\">".concat(todo.memberPhone, "</div>\n                      <div class=\"col-sm-6\" style=\"width:50%\">").concat(todo.memberName, "</div>\n                  </div>\n             </li>"));
+    display.append("<li class=\"list-group-item\" id=\"\">\n                  <div class=\"row\">\n                      <div class=\"col-sm-6\" style=\"width:50%;text-align: center;\" id=\"\">".concat(todo.memberPhone, "</div>\n                      <div class=\"col-sm-6\" style=\"width:50%; text-align:center;\">").concat(todo.memberName, "</div>\n                  </div>\n             </li>"));
   });
 };
 
