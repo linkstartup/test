@@ -299,7 +299,7 @@ $(document).ready(function () {
           displayTodos(data);
         } else {//人数满
           if (data.haveWinner) {
-            timer.html(data.haveWinner.memberPhone);
+            timer.html("winner : "+data.haveWinner.memberPhone);
           }
 
           captain.append("<div> ".concat(data.t, "  full</div>"));
