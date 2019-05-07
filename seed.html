@@ -373,6 +373,7 @@ $(document).ready(function () {
             //window.location.href = data.msg;
           } else {
             displayMessage(true, data.msg);
+            setTimeout(function(){message.hide();},2000);
             captain.empty();
             display.empty();
             $('#imgContainer').empty();
