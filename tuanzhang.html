@@ -27,9 +27,12 @@
                 </form> -->
 
                 <div class="form-group">
-                    <label for="phone">new Tuan</label>
-                    <input type="text" class="form-control" id="tuanzhangCreate" placeholder="phone of tuanzhang">
-                   
+                    <label for="phone">Phone</label>
+                    <input type="text" class="form-control" id="tuanzhangCreate" placeholder="Phone of tuanzhang">
+
+                    <label for="phone">Name</label>
+                    <input type="text" class="form-control" id="tuanzhangName" placeholder="Name of tuanzhang">
+                                       
                     <button id="createTuan" class="btn btn-primary">Create Tuan</button>
                 </div>                
 
@@ -111,7 +114,7 @@
             $("#createTuan").click(()=>{
                 fetch('/tuanzhangcreate',{
                     method : 'post',
-                    body : JSON.stringify({tuanzhangPhone:$("#tuanzhangCreate").val()}),
+                    body : JSON.stringify({tuanzhangPhone:$("#tuanzhangCreate").val(),tuanzhangName:$("#tuanzhangName").val()}),
                     headers : {
                         "Content-Type" : "application/json; charset=utf-8"
                     }

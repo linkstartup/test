@@ -8,8 +8,8 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 
-const server = 'www.indo123.co/';
-// const server = 'http://localhost/';
+// const server = 'www.indo123.co/';
+const server = 'http://localhost/';
 const fs = require("fs");
 
 const fileUpload = require('express-fileupload');
@@ -48,8 +48,8 @@ app.use(bodyParser.urlencoded({
 
 
 //connect to MongoDB
-// mongoose.connect('mongodb://localhost:27017/crud_mongodb');
-mongoose.connect("mongodb://root:261500Aa@localhost:27017/crud_mongodb?authSource=admin")
+mongoose.connect('mongodb://localhost:27017/crud_mongodb');
+// mongoose.connect("mongodb://root:261500Aa@localhost:27017/crud_mongodb?authSource=admin")
 var db2 = mongoose.connection;
 
 //handle mongo error
@@ -69,7 +69,7 @@ app.use(session({
 }));
 
 // serve static files from template
-app.use(express.static(__dirname + '/templateLogReg'));
+// app.use(express.static(__dirname + '/templateLogReg'));
 // include routes
 // var routes = require('./routes/router');
 app.use('/', router);
@@ -130,25 +130,21 @@ router.post('/', function(req, res, next) {
   
 
 
-    app.post('/userEquity', function(req, res) {
+app.post('/userEquity', function(req, res) {
 
-        db.getDB().collection('users').find({
-            _id: new ObjectId(req.body.user._id)
-        }).toArray((err, documents) => {        
-            res.json({
-                leftRatio:documents[0].leftRatio,
-                a:documents[0].a,
-            })
+    db.getDB().collection('users').find({
+        _id: new ObjectId(req.body.user._id)
+    }).toArray((err, documents) => {        
+        res.json({
+            leftRatio:documents[0].leftRatio,
+            a:documents[0].a,
         })
     })
+})
 
   // GET route after registering
   router.post('/successLog', function(req, res, next) {
-    
-    db.getDB().collection('photo').insertOne({ //创建图片表
-        photo: 'photo',
-    }, (err, result) => {
-    
+        
         User.findById(req.session.userId)
         .exec(function(error, user) {
           if (error) {
@@ -166,30 +162,11 @@ router.post('/', function(req, res, next) {
           }
         });
 
-    });
 
   });
   
   
-  
-  
-  // GET route after registering
-  // router.get('/profile', function(req, res, next) {
-  //   User.findById(req.session.userId)
-  //     .exec(function(error, user) {
-  //       if (error) {
-  //         return next(error);
-  //       } else {
-  //         if (user === null) {
-  //           var err = new Error('Not authorized! Go back!');
-  //           err.status = 400;
-  //           return next(err);
-  //         } else {
-  //           return res.send('<h1>Name: </h1>' + user.username + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>')
-  //         }
-  //       }
-  //     });
-  // });
+
   
   // GET for logout logout
   router.post('/logout', function(req, res, next) {
@@ -261,11 +238,18 @@ app.post('/upload', function(req, res) {
     name=name+'.'+imgSuffix
 
     // Use the mv() method to place the file somewhere on your server
-    ///usr/local/var/www/Blur/index.html
-    //./static/images/
-    sampleFile.mv('./clip/Blur/' + name, function(err) {
-        res.json({imageUrl:'https://www.indo123.co/clip/Blur/' + name,imgName:name});
-    });
+    // sampleFile.mv('./clip/Blur/' + name, function(err) {
+    //     res.json({imageUrl:'https://www.indo123.co/clip/Blur/' + name,imgName:name});
+    // });
+
+    sampleFile.mv('/usr/local/var/www/Blur/' + name, function(err) {
+        db.getDB().collection('photo').insertOne({name:name,createAt:new Date(),uploadBy:'root'}, (err, result) => { //加入成员表
+
+            res.json({imageUrl:'http://localhost/Blur/' + name,imgName:name});
+
+
+        });
+    });    
 });
 
 
@@ -274,7 +258,17 @@ app.post('/upload', function(req, res) {
 app.post('/base64', (req, res) => {
 
     var base64Data = req.body.base64.replace(/^data:image\/png;base64,/, "");
-    fs.writeFile('./clip/Blur/first/'+req.body.imgName, base64Data, {
+
+    // fs.writeFile('./clip/Blur/first/'+req.body.imgName, base64Data, {
+    //     encoding: 'base64'
+    // }, function(err) {
+    //     console.log(err);
+    //     res.json({
+    //         msg:'success uploaded base64'
+    //     })
+    // });
+
+    fs.writeFile('/usr/local/var/www/Blur/first/'+req.body.imgName, base64Data, {
         encoding: 'base64'
     }, function(err) {
         console.log(err);
@@ -283,8 +277,16 @@ app.post('/base64', (req, res) => {
         })
     });
 
-
 });
+
+
+
+
+
+//seed
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'seed.html'));
+})
 
 
 //dave团长
@@ -366,12 +368,11 @@ app.post('/davet', (req, res) => {
         }).toArray((err, documents) => {
             if (documents.length == 0) { //是新成员
 
-
+                console.log('new')
                 //判断当前的团是否满了
                 db.getDB().collection(collection3).find({
                     _id: new ObjectId(req.body.t)
                 }).toArray((err, documents) => {
-
 
                     if (documents[0].m.length < 10) { //没有满
                         console.log('not full join')
@@ -505,7 +506,7 @@ app.post('/davet', (req, res) => {
 
                 let existSameT = joinedts.filter((joinedt) => {
                     return joinedt == req.body.t
-                });
+                });//参加过这个团
 
 
                 //查询参加次数
@@ -516,7 +517,7 @@ app.post('/davet', (req, res) => {
                 }).toArray((err, documents) => {
 
 
-                    if (documents[0].m.length < 10) { //没有满
+                    if (documents[0].m.length < 10) { //当前的团没有满
 
 
                         if (existSameT.length > 0) { //加入过同一个团
@@ -572,13 +573,13 @@ app.post('/davet', (req, res) => {
                     } else { //当前的团已经满了
                         console.log('full')
 
-                        //查看当前团长是否有没有满的团
+                        //查看当前团长是否有其他没有满的团
                         db.getDB().collection(collection3).find({
                             t: tuanzhangId
                         }).toArray((err, documents) => {
                             let notfull = documents.filter((document) => {
                                 return document.m.length < 10
-                            });
+                            });//其他没有满的团
 
 
                             if (notfull.length > 0) { //当前团长，存在没有满的团
@@ -594,15 +595,15 @@ app.post('/davet', (req, res) => {
                                     notExistSameT.push(notfull[i]._id.toString())
                                 }
 
-                                console.log(notExistSameT)
-                                console.log(joinedts)
+                                console.log(notExistSameT)//没有满的团
+                                console.log(joinedts)//加入过的团
 
                                 for (let i = 0; i < joinedts.length; i++) {
 
-                                    notExistSameT.remove(joinedts[i].toString())
+                                    notExistSameT.remove(joinedts[i].toString())//没有满的团，去除加入过的团
                                 }
 
-                                console.log(notExistSameT)
+                                console.log(notExistSameT)//没有满的团，并且没有加入过的团
 
 
 
@@ -610,7 +611,7 @@ app.post('/davet', (req, res) => {
 
                                 if (notExistSameT.length > 0) {
 
-                                    let existedTuanId = notExistSameT[0];
+                                    let existedTuanId = notExistSameT[0];//从第一个，没有满的团，并且没有加入过的团，开始
                                     console.log(existedTuanId)
 
                                     req.body.tuanzhangId = tuanzhangId;
@@ -640,7 +641,6 @@ app.post('/davet', (req, res) => {
                                                 joinedt: existedTuanId
                                             }
                                         }, (err, result) => {
-                                            console.log(server)
 
                                             res.json({
                                                 full: true,
@@ -651,7 +651,7 @@ app.post('/davet', (req, res) => {
 
                                     });
 
-                                } else {
+                                } else {//所有团都加入过
 
                                     res.json({
                                         msg: 'existed'
@@ -774,6 +774,14 @@ app.post('/setd', (req, res) => { //设置每个团开奖时间，团的图片�
 
 
 
+
+//whatstime
+app.post('/whatstime',(req,res)=>{
+    res.json({
+        whatstime:new Date()
+    })
+})
+
 //倒计时
 //倒计时开奖
 // let endDate = new Date("2019-04-28 03:06:00");
@@ -795,7 +803,7 @@ app.post('/getT', (req, res) => { //查询每个团开奖时间，团的图片�
         } else {
             if (documents[0].endDate) {
                 result.diffSecond = parseInt((new Date(documents[0].endDate) - new Date()) / 1000);
-
+                
             } else {
                 result.diffSecond = parseInt((new Date("2019-04-28 17:55:50") - new Date()) / 1000)
 
@@ -1337,7 +1345,7 @@ app.post('/tuanzhangcreate', (req, res) => {
                     m: [{
                         tuanzhangId: req.body.tuanzhangPhone,
                         memberPhone: req.body.tuanzhangPhone,
-                        memberName: req.body.tuanzhangPhone,
+                        memberName: req.body.tuanzhangName,
                         time: 1,
                         tuanId: '',
                         role: 'tuanzhang'
@@ -1348,7 +1356,6 @@ app.post('/tuanzhangcreate', (req, res) => {
                     console.log(result.insertedId)
 
                     res.json({
-                        // msg: server + "tuan?t=" + result.insertedId,
                         msg: "hi?t=" + result.insertedId,
                         error: null
                     });
@@ -1362,7 +1369,7 @@ app.post('/tuanzhangcreate', (req, res) => {
                 m: [{
                     tuanzhangId: req.body.tuanzhangPhone,
                     memberPhone: req.body.tuanzhangPhone,
-                    memberName: req.body.tuanzhangPhone,
+                    memberName: req.body.tuanzhangName,
                     time: 1,
                     tuanId: '',
                     role: 'tuanzhang'
@@ -1373,7 +1380,6 @@ app.post('/tuanzhangcreate', (req, res) => {
                 console.log(result.insertedId)
 
                 res.json({
-                    // msg: server + "tuan?t=" + result.insertedId,
                     msg: "hi?t=" + result.insertedId,
                     error: null
                 });

@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>indo123.co</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-8">                                
+                 <div class="btn btn-primary" id="timer" style="width:100%;">winner</div>
+                </div>
+                <div class="col-lg-2"></div>
+        </div>
+
+        
+        <div class="row">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-8">                                
+                 <div class="btn btn-primary" id="captain" style="width:100%;"></div>
+                </div>
+                <div class="col-lg-2"></div>
+        </div>
+        
+        
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">                                
+                <ul class="list-group" id="display">
+                </ul>
+            </div>
+            <div class="col-lg-2"></div>
+        </div> 
+        <br>
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="alert" role="alert" id="message">
+                    
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
+
+        <div class="row" id="jointuan">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <form id="form">
+                    <div class="form-group" id="userInfo">
+                        <label for="phone">phone</label>
+                        <input class="form-control" id="phoneUserInput" type="tel" name="phone"  placeholder="81386139021" />
+
+
+                        <label for="phone" style="margin-top:15px;">name </label>
+                        <input class="form-control" id="nameUserInput" type="text" name="name"  placeholder="name" />
+
+
+                       
+                        <button id="join" type="submit" class="btn btn-primary col-lg-12" style="margin-top:15px;">join</button>
+                    </div>
+                    
+                </form>
+
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
+        <div class="" id="imgContainer" style="width:100%;"></div>
+
+           
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script>
+const server='';
+
+"use strict";
+
+$(document).ready(function () {
+  var display = $("#display");
+  var captain=$('#captain');
+  var jointuan=$('#jointuan');
+  var message = $("#message");
+  var form = $("#form");
+  var phoneUserInput = $("#phoneUserInput");
+  var join = $("#join");
+  var timer = $("#timer");
+
+
+  function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+
+      if (pair[0] == variable) {
+        return pair[1];
+      }
+    }
+
+    return false;
+  }
+
+  var t = getQueryVariable("t") ? getQueryVariable("t") : '5cc849d7ec37e375be625556';
+  
+  
+  
+  
+  function startCount(diffSecond) {
+    console.log(diffSecond);
+
+    if (diffSecond >= 0) {
+      var offset = moment.duration(diffSecond, 'seconds');
+      var month = offset.months();
+      var day = offset.days();
+      var hour = offset.hours();
+      var minute = offset.minutes();
+      var second = offset.seconds();
+      var diff = moment({
+        month: month,
+        day: day,
+        hour: hour,
+        minute: minute,
+        second: second
+      });
+      $("#timer").html(diff.format("HH:mm:ss"));
+    } else {
+      //时间到
+      $.ajax({
+        type: "POST",
+        url: server+"/hit",
+        data: JSON.stringify({
+          t: t
+        }),
+        contentType: "application/json; charset=utf-8",
+        crossDomain: true,
+        dataType: "json",
+        success: function success(data, status, jqXHR) {
+          if (data.m.length < 10) {
+            //时间到，人未满
+            $("#timer").html('Game Over'); 
+            $("#userInfo").hide()
+          } else {
+            //时间到，且人数满
+            $.ajax({
+              type: "POST",
+              url: server+"/davec",
+              data: JSON.stringify({
+                t: t
+              }),
+              contentType: "application/json; charset=utf-8",
+              crossDomain: true,
+              dataType: "json",
+              success: function success(data, status, jqXHR) {
+                $("#timer").html(data.memberPhone);
+              }
+            });
+          }
+        }
+      });
+    }
+  }
+  
+  
+  $.ajax({
+    type: "POST",
+    url: server+"/getT",
+    data: JSON.stringify({
+      t: t
+    }),
+    contentType: "application/json; charset=utf-8",
+    crossDomain: true,
+    dataType: "json",
+    success: function success(data, status, jqXHR) {
+
+      var diffSecond = data.diffSecond;
+      startCount(diffSecond);
+      var id = setInterval(function () {
+        diffSecond--;
+        console.log(diffSecond);
+
+        if (diffSecond >= 0) {
+          var offset = moment.duration(diffSecond, 'seconds');
+          var month = offset.months();
+          var day = offset.days();
+          var hour = offset.hours();
+          var minute = offset.minutes();
+          var second = offset.seconds();
+          var diff = moment({
+            month: month,
+            day: day,
+            hour: hour,
+            minute: minute,
+            second: second
+          });
+          $("#timer").html(diff.format("HH:mm:ss"));
+        } else {
+          //时间到
+          clearInterval(id);
+          $.ajax({
+            type: "POST",
+            url: server+"/hit",
+            data: JSON.stringify({
+              t: t
+            }),
+            contentType: "application/json; charset=utf-8",
+            crossDomain: true,
+            dataType: "json",
+            success: function success(data, status, jqXHR) {
+              if (data.m.length < 10) {
+                //时间到，人未满
+                $("#timer").html('Game Over'); 
+                $("#userInfo").hide()
+              } else {
+                //时间到，且人数满
+                $.ajax({
+                  type: "POST",
+                  url: server+"/davec",
+                  data: JSON.stringify({
+                    t: t
+                  }),
+                  contentType: "application/json; charset=utf-8",
+                  crossDomain: true,
+                  dataType: "json",
+                  success: function success(data, status, jqXHR) {
+                    $("#timer").html(data.memberPhone);
+                  }
+                });
+              }
+            }
+          });
+        }
+      }, 1000);
+    },
+    error: function error(jqXHR, status) {
+      // error handler
+      console.log(jqXHR);
+      console.log('fail' + status.code);
+    }
+  }); //倒计时开奖
+
+
+
+  function getTodos() {
+    $.ajax({
+      type: "POST",
+      url: server+"/hit",
+      data: JSON.stringify({
+        t: t
+      }),
+      contentType: "application/json; charset=utf-8",
+      crossDomain: true,
+      dataType: "json",
+      success: function success(data, status, jqXHR) {
+
+        // for (var i = 0; i < data.imgUrl.length; i++) {
+        //     $("#imgContainer").append("<img style=\"width:100%;\" src=\"".concat(data.imgUrl[i], "\" alt=\"\">"));
+        // }
+
+    //   $("#imgContainer").append(`<img style="width:100%;" src="https://cbu01.alicdn.com/img/ibank/2018/670/505/9563505076_305240016.jpg" >`)
+
+    $("#imgContainer").append("<img style=\"width:100%;\" src=\"https://cbu01.alicdn.com/img/ibank/2018/670/505/9563505076_305240016.jpg\" >");
+    
+    
+    //   for (var _i = 0; _i < data.videoUrl.length; _i++) {
+    //     // $("#imgContainer").append("<iframe width=\"560\" height=\"315\" src=\"".concat(data.videoUrl[_i], "\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"));
+    //   //https://www.youtube.com/embed/pHSpuq6JYws
+    // }
+
+    // $("#imgContainer").append(`<iframe width="560" height="315" src="https://www.youtube.com/embed/pHSpuq6JYws" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
+        $("#imgContainer").append("<iframe width=\"560\" height=\"315\" style=\"width:100%; height:200px \" src=\"https://www.youtube.com/embed/pHSpuq6JYws\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>");
+
+
+
+        if (data.m.length < 10) {
+            captain.append("<div> ".concat(data.t, " need ").concat(10 - data.m.length, " </div>"))
+        //   captain.append(`<div>captain ${data.t} need ${10 - data.m.length} more</div>`)
+        //   captain.append("<div>captain ".concat(data.t, " </div>"));
+        //   captain.append("<div>need ".concat(10 - data.m.length, " more</div>"));
+          displayTodos(data);
+        } else {
+          if (data.haveWinner) {
+            timer.html(data.haveWinner.memberPhone);
+          }
+
+          captain.append("<div>captain ".concat(data.t, "  full</div>"));
+        //   captain.append("<div>full</div>"); 
+          $("#userInfo").hide()
+
+          displayTodos(data);
+        }
+      }
+    });
+  }
+
+
+  getTodos();
+
+
+  function validatePhone(phone) {
+    var re = /^[0-9]{11}$/;
+    return re.test(phone);
+  }
+
+
+
+
+
+  form.submit(function (e) {
+    e.preventDefault();
+
+    if (validatePhone($('#phoneUserInput').val())&& ($('#nameUserInput').val())  ) {
+      $.ajax({
+        type: "POST",
+        url: server+"/davet",
+        data: JSON.stringify({
+          t: t,
+          memberPhone: phoneUserInput.val(),
+          memberName: $('#nameUserInput').val()
+        }),
+        contentType: "application/json; charset=utf-8",
+        crossDomain: true,
+        dataType: "json",
+        success: function success(data, status, jqXHR) {
+            console.log(data)
+          if (data.full) {
+
+            //window.location.href = data.msg;
+          } else {
+            displayMessage(true, data.msg);
+            captain.empty();
+            display.empty();
+            jointuan.empty();
+            $('#imgContainer').empty();
+            getTodos();
+          }
+        }
+      });
+    }
+  }); 
+  const displayTodos = (data)=>{
+      data.m.forEach((todo)=>{
+          display.append(
+              `<li class="list-group-item" id="">
+                  <div class="row">
+                      <div class="col-sm-6" style="width:50%" id="">${todo.memberPhone}</div>
+                      <div class="col-sm-6" style="width:50%">${todo.memberName}</div>
+                  </div>
+             </li>`);
+      });
+  }
+
+
+
+//   var displayTodos = function displayTodos(data) {
+//     data.m.forEach(function (todo) {
+//       display.append("<li class=\"list-group-item\" id=\"\">\n                            <div class=\"row\">\n                                <div class=\"col-md-4\" id=\"\">".concat(todo.memberPhone, "</div>\n                                <div class=\"col-md-4\">").concat(todo.memberName, "</div>\n                            </div>\n                       </li>"));
+//     });
+//   };
+
+
+message.hide();
+
+var displayMessage = function displayMessage(flag, msg) {
+message.removeClass('alert-danger');
+message.addClass('alert-success');
+message.html(msg);
+message.show();
+};
+
+
+});
+    </script>
+</body>
+</html>

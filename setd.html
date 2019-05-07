@@ -44,12 +44,7 @@
 
                         <label for="phone">imgUrl</label>
                         <input class="form-control" id="imgUrl" class='imgUrlAdded' type="text" name="name"  placeholder="imgUrl" />
-<!--                         <div for="" id="show">show</div>
-                        <img src="" alt="" id="showImg"> -->
-<!-- 
-                        <div class="form-group" id="imgContainer"></div>
-                        <button class="btn btn-primary" id="addImg">add</button>
-                        -->
+
                         <label for="phone">video</label>
                         <input class="form-control" id="videoUrl" class='videoUrlAdded' type="text" name="name"  placeholder="videoUrl" />
 
@@ -75,29 +70,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script>
+   
+   <script>
 
         $(document).ready(()=>{
-
-// https://www.youtube.com/embed/pHSpuq6JYws?rel=0&amp;controls=0&amp;showinfo=0
-// https://www.youtube.com/embed/Szoqh_pBsmU?rel=0&amp;controls=0&amp;showinfo=0
-//<iframe width="560" height="315" src="https://www.youtube.com/embed/Szoqh_pBsmU?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-
-            // $( "#imgUrl" ).blur(function() {
-            //     $("#showImg").attr("src",$("#imgUrl").val())
-            // });
-
-            // $("#show").click(function(){
-            //     $("#showImg").attr("src",$("#imgUrl").val())
-            // })
-
-            // let imgNumber=0;
-            // $("#addImg").click(function(){
-            //     $("#imgContainer").append(`<label for="phone">${imgNumber++}</label><input class="form-control" class="imgUrlAdded" type="text" name="name"  placeholder="imgUrl" /><div for="" class="showImg">show</div><img src="" alt="" class="showImgDiv">`)
-            // })
-
-
 
     
 
@@ -138,132 +114,20 @@
 
 
 
-            // fetch('/getT',{//抽奖
-            //     method : 'post',
-            //     body : JSON.stringify({t:t}),
-            //     headers : {
-            //         "Content-Type" : "application/json; charset=utf-8"
-            //     }
-            // }).then((response)=>{
-            //     return response.json();
-            // }).then((data)=>{
-            //     console.log(data)
-            //     let diffSecond=data.diffSecond;
+           // date from server
+           fetch('/whatstime',{//参加团
+                method : 'post',
+                body : JSON.stringify({}),
+                headers : {
+                    "Content-Type" : "application/json; charset=utf-8"
+                }
+            }).then((response)=>{
+                return response.json();
+            }).then((data)=>{
+                var now=moment(data.whatstime).format('YYYY-MM-DD HH:mm:ss');
 
-            //     startCount(diffSecond);
-
-            //     var id = setInterval(function(){
-            //         console.log(diffSecond)
-            //         diffSecond--;
-            //         if(diffSecond>=0){
-            //             var offset = moment.duration(diffSecond, 'seconds');
-            //             var month = offset.months();
-            //             var day = offset.days();
-            //             var hour = offset.hours();
-            //             var minute = offset.minutes();
-            //             var second = offset.seconds();
-
-            //             var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
-            //             $("#timer").html(diff.format("HH:mm:ss"));
-            //         }else{
-            //             clearInterval(id)
-                                
-            //             fetch('/hit',{//查询当前团
-            //                 method : 'post',
-            //                 body : JSON.stringify({t:t}),
-            //                 headers : {
-            //                     "Content-Type" : "application/json; charset=utf-8"
-            //                 }
-            //             }).then((response)=>{
-            //                 return response.json();
-            //             }).then((data)=>{
-            //                 if(data.m.length<10){
-
-            //                     $("#timer").html('Game Over')
-            //                     $("#userInfo").hide()
-
-
-            //                 }else{//时间到，且人数满
-            //                     fetch('/hiBtn',{//抽奖
-            //                         method : 'post',
-            //                         body : JSON.stringify({t:t}),
-            //                         headers : {
-            //                             "Content-Type" : "application/json; charset=utf-8"
-            //                         }
-            //                     }).then((response)=>{
-            //                         return response.json();
-            //                     }).then((data)=>{
-            //                         $("#timer").html(data.memberPhone)
-            //                         console.log(data)
-                                    
-            //                     })
-                               
-            //                 }
-                            
-            //             })
-            
-
-            //         }
-            //     },1000);
-
-                
-            // })
-
-
-
-            //倒计时开奖
-            
-            // function startCount(diffSecond){
-            //     console.log(diffSecond)
-            //     if(diffSecond>=0){
-            //         var offset = moment.duration(diffSecond, 'seconds');
-            //         var month = offset.months();
-            //         var day = offset.days();
-            //         var hour = offset.hours();
-            //         var minute = offset.minutes();
-            //         var second = offset.seconds();
-
-            //         var diff = moment({ month :month, day :day, hour :hour, minute :minute, second :second});
-            //         $("#timer").html(diff.format("HH:mm:ss"));
-            //     }else{//时间到
-            //         fetch('/hit',{//查询当前团人数
-            //             method : 'post',
-            //             body : JSON.stringify({t:t}),
-            //             headers : {
-            //                 "Content-Type" : "application/json; charset=utf-8"
-            //             }
-            //         }).then((response)=>{
-            //             return response.json();
-            //         }).then((data)=>{
-            //             if(data.m.length<10){//时间到，人未满
-            //                 $("#timer").html('Game Over')
-            //                 $("#userInfo").hide()
-
-
-
-            //             }else{//时间到，且人数满
-            //                 fetch('/hiBtn',{//抽奖
-            //                     method : 'post',
-            //                     body : JSON.stringify({t:t}),
-            //                     headers : {
-            //                         "Content-Type" : "application/json; charset=utf-8"
-            //                     }
-            //                 }).then((response)=>{
-            //                     return response.json();
-            //                 }).then((data)=>{
-            //                     $("#timer").html(data.memberPhone)
-            //                     console.log(data)
-                                
-            //                 })
-                           
-            //             }
-                        
-            //         })                    
-            //     }
-            // }
-
-
-
+                $('#endDate').val(now)
+            }); 
 
 
 
@@ -278,28 +142,14 @@
                 }).then((response)=>{
                     return response.json();
                 }).then((data)=>{
-                    if(data.m.length<10){
-                        display.append(`<div>captain ${data.t} </div>`)                    
-                        display.append(`<div>need ${10-data.m.length} more</div>`)
-                        displayTodos(data);
-
-                    }else{
-                        if(data.haveWinner){
-                            timer.html(data.haveWinner.memberPhone)
-
-                        }
-                        display.append(`<div>captain ${data.t} </div>`)                    
-                        display.append(`<div>full</div>`)
-                        $("#userInfo").hide()
-                        displayTodos(data);
-                       
-                    }
+                    // $('#imgUrl').val(data.imgUrl[0])
+                    // $('#videoUrl').val(data.videoUrl[0])
                     
                 });
 
             } 
 
-            // getTodos()
+            getTodos()
 
 
 
@@ -331,7 +181,7 @@
                 videoUrlArray=videoUrlStrings.split(",");
 
 
-
+                
                 let endDate=new Date($('#endDate').val());
                 let validDate=endDate instanceof Date && !isNaN(endDate);
                 if(validDate){
