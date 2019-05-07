@@ -235,7 +235,6 @@ $(document).ready(function () {
                 //时间到，人未满
                 $("#timer").html('tamat'); 
                 $("#userInfo").hide()
-                captain.hide()
               } else {
                 //时间到，且人数满
                 $.ajax({
@@ -249,7 +248,6 @@ $(document).ready(function () {
                   dataType: "json",
                   success: function success(data, status, jqXHR) {
                     $("#timer").html("winner : "+data.memberPhone);
-                    captain.hide();
                     $("#userInfo").hide()
                   }
                 });
@@ -301,22 +299,14 @@ $(document).ready(function () {
 
         if (data.m.length < 10) {
             captain.append("<div>  ".concat(data.m.length, "/10 </div>"))
-
-            // captain.append("<div> ".concat(data.t, " need ").concat(10 - data.m.length, " </div>"))
-        //   captain.append(`<div>captain ${data.t} need ${10 - data.m.length} more</div>`)
-        //   captain.append("<div>captain ".concat(data.t, " </div>"));
-        //   captain.append("<div>need ".concat(10 - data.m.length, " more</div>"));
-          displayTodos(data);
+            displayTodos(data);
         } else {//人数满
           if (data.haveWinner) {
             timer.html("winner : "+data.haveWinner.memberPhone);
           }
 
-        //   captain.append("<div> ".concat(data.t, "  full</div>"));
-        //   captain.append("<div>full</div>"); 
-          captain.hide();
           $("#userInfo").hide()
-
+          captain.append("<div>  ".concat(data.m.length, "/10 </div>"))
           displayTodos(data);
         }
       }
