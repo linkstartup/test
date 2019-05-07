@@ -54,17 +54,17 @@
             <div class="col-lg-2"></div>
             <div class="col-lg-8">
                 <form id="form">
-                    <div class="form-group" id="userInfo">
-                        <label for="phone">phone</label>
+                    <div class="form-group" id="userInfo" style="color:red;">
+                        <label for="phone">telepon</label>
                         <input class="form-control" id="phoneUserInput" type="tel" name="phone"  placeholder="81386139021" />
 
 
-                        <label for="phone" style="margin-top:15px;">name </label>
-                        <input class="form-control" id="nameUserInput" type="text" name="name"  placeholder="name" />
+                        <label for="phone" style="margin-top:15px;">nama </label>
+                        <input class="form-control" id="nameUserInput" type="text" name="name"  placeholder="nama" />
 
 
                        
-                        <button id="join" type="submit" class="btn btn-primary col-lg-12" style="margin-top:15px;">join</button>
+                        <button id="join" type="submit" class="btn btn-primary col-lg-12" style="margin-top:15px;">ikut</button>
                     </div>
                     
                 </form>
@@ -155,7 +155,7 @@ $(document).ready(function () {
         success: function success(data, status, jqXHR) {
           if (data.m.length < 10) {
             //时间到，人未满
-            $("#timer").html('Game Over'); 
+            $("#timer").html('tamat'); 
             $("#userInfo").hide()
           } else {
             //时间到，且人数满
@@ -227,7 +227,7 @@ $(document).ready(function () {
             success: function success(data, status, jqXHR) {
               if (data.m.length < 10) {
                 //时间到，人未满
-                $("#timer").html('Game Over'); 
+                $("#timer").html('tamat'); 
                 $("#userInfo").hide()
                 captain.hide()
               } else {
